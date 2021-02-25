@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+* {
+  margin: 0;
+  font-family: Roboto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+html, body, #root, .App {
+  height: 100%;
+}
+
+.root {
+  width: 100vw;
+  height: 100vh;
+}

@@ -1,0 +1,11 @@
+# Modules and builds
+frontend/node_modules
+internal/node_modules
+frontend/build
+
+# vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
