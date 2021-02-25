@@ -1,6 +1,6 @@
 Airplane: Flight Attendant, First Class Passenger, Economy Passenger, Captain, Co-Pilot, Stewardess, Air Marshall, Mechanic
 Bank: Accountant, Robber, Customer, General Manager, Security Guard, Teller, Consultant, Armored Car Driver
-Beach: Beach Waitress, Surfer, Lifeguard, Thief, Beach Goer, Ice Cream Truck Driver, Beach Photographer, Seagull
+Beach: Beach Waitress, Surfer, Lifeguard, Thief, Beachgoer, Ice Cream Truck Driver, Beach Photographer, Seagull
 Casino: Bartender, Security Guard, Bouncer, Manager, Hustler, Dealer, Gambler, Slot Attendant
 Circus: Acrobat, Animal Trainer, Clown, Juggler, Magician, Audience Member, Tightrope Walker, Dancer, Unicyclist
 Day Spa: Customer, Stylist, Manicurist, Dermatologist, Beautician, Masseuse, Makeup Artist, Spa Therapist
