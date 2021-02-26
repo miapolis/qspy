@@ -74,7 +74,7 @@ export const HowToPlay = (props:{style?: React.CSSProperties, hasPlayed: boolean
 
     return (
         <div style={props.style}>
-            <Button startIcon={<Info />} onClick={handleOpen} className={headerClasses.button}>How to Play</Button>
+            <Button startIcon={<Info />} onClick={handleOpen} className={headerClasses.button}>About</Button>
             <Modal aria-labelledby="modal-title" aria-describedby="modal-description" className={classes.modal} open={open} onClose={handleClose} closeAfterTransition BackdropComponent={Backdrop} BackdropProps={{timeout: 500}}>
                 <Fade in={open}>
                     <div className={classes.paper}>

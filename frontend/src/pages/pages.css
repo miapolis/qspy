@@ -232,6 +232,8 @@
 .statusSubHeader {
     font-weight: normal;
     margin-top: 10px;
+    margin-right: 40px!important;
+    margin-left: 40px!important;
     color: var(--dimmest-white)
 }
 

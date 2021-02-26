@@ -17,7 +17,7 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 
 import Card from '../components/card';
-import { HowToPlay } from '../components/how-to-play';
+import { HowToPlay } from '../components/about';
 import PlayerElement from '../components/player-element';
 import Dots from '../components/dots';
 import Timer from '../components/timer';
@@ -527,6 +527,7 @@ export const GameView = ({me, roomName, send, state, leave, hasUserPlayed}: Deep
                         );
                     })}
                     <Button className='changeNicknameButton' onClick={() => setNicknameDialogOpen(true)} variant='outlined'>Change Nickname</Button>
+                    <div style={{height: '5px'}}></div>
                     <ChangeNicknameDialog isOpen={nicknameDialogOpen} currentNickname={me.nickname} send={send} onClose={() => {
                         setNicknameDialogOpen(false);
                     }}/>
