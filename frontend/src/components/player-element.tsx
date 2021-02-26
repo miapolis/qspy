@@ -24,7 +24,7 @@ export default function PlayerElement ({name, discriminator, isHost, score, rank
                 {rank !== undefined ? <div className={nameText}><b>{`${rank}.`}</b> {name}</div> : <div className={nameText}>{name}</div>}
                 { isHost ? <img src={crown}></img> : null }
             </div>
-            { score !== 0 ? <div className='scoreText'><b>{score}</b> points</div> : null }
+            { score !== 0 ? <div className='scoreText'><b>{score}</b> {score === 1 ? 'point' : 'points'}</div> : null }
             { hovered && host && !isHost ? <img className='kick unselectable' onClick={() => onKick(discriminator)} draggable={false} src={kickMember}></img> : null }
         </div>
     );
