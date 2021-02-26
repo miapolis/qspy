@@ -89,13 +89,7 @@ export const Game = (props: GameProps) => {
     const reducer = useStateReducer(sendJsonMessage);
     const [state, dispatch] = React.useReducer(reducer, undefined);
     const send = useSender(dispatch);
-
-    window.addEventListener('beforeunload', (e => {
-        if (!state?.roomState.started) return;
-        e.preventDefault();
-        e.returnValue = 'Are you sure? If you reload the page, you will be kicked from the game.';
-    }));
-
+    
     React.useEffect(() => { // Set has played to true after 5 seconds of reading
         if (hasPlayed) return;
         setTimeout(() => {
