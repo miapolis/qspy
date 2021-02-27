@@ -445,32 +445,34 @@ export const GameView = ({me, roomName, send, state, leave, hasUserPlayed}: Deep
                     <CornerButtons roomID={roomName} leave={leave} />
                     <HowToPlay hasPlayed={hasUserPlayed} style={{position: 'absolute', margin: '0.5rem', top: 0, right: 0}} />
                 </div>
-                <div className='gameTimer'>
-                    { state.timerLength && state.started && !state.endGame ? <Timer duration={state.timerLength}/> : null }
-                </div>
                 <div className='mainArea'>
+                    { !state.endGame && state.started ? <div className='topSector'>
+                        <div className='gameTimer'>
+                            { state.timerLength && state.started && !state.endGame ? <Timer duration={state.timerLength}/> : null }
+                        </div>
+                    </div> : null}
                     {state.isStarting ? <Dots verticalOffset={60}/> : null}
                     { 
                         !state.started ? <PreStartHeaders starting={state.isStarting} playerCount={playerCount} timerLength={state.timerLength} isHost={me.isHost} send={send} />
                         : state.endGame ? <EndGameMenu endGame={state.endGame} isHost={me.isHost} send={send} />
                         :
                         (
-                            <div>
-                                {
-                                    !state.currentVote ? <Card spy={me.isSpy || false} location={state.currentLocation} role={me.role} onOpen={() => setCardFlipped(true)}/> 
-                                    : <VoteMenu currentVote={state.currentVote} me={me} send={send} />  
-                                }
+                            <div style={{width: '100%', height: '100%', display: 'flex', flexFlow: 'column'}}>
+                                <div className='centralArea'>
+                                    {
+                                        !state.currentVote ? <Card spy={me.isSpy || false} location={state.currentLocation} role={me.role} onOpen={() => setCardFlipped(true)}/> 
+                                        : <VoteMenu currentVote={state.currentVote} me={me} send={send} /> 
+                                    }
+                                </div>
+                                <div className='lowerSector'>
                                 {
                                     cardFlipped ? <div style={{
-                                        position: 'absolute',
-                                        bottom: '15px',
-                                        left: '50%',
                                         height: '36px',
                                         display: 'flex',
                                         width: '100%',
                                         columnGap: '10px',
                                         justifyContent: 'center',
-                                        transform: 'translateX(-50%)'}}>
+                                        }}>
                                         { me.isSpy ?
                                         <Button
                                         onClick={() => setGuessLocationDialogOpen(true)}
@@ -508,6 +510,7 @@ export const GameView = ({me, roomName, send, state, leave, hasUserPlayed}: Deep
                                 value={voteValue} 
                                 isOpen={state.currentVote ? false : voteDialogOpen} 
                                 onClose={handleVoteDialogClose}/>
+                            </div>
                             </div>
                         )
                     }

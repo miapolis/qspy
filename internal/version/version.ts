@@ -1,8 +1,8 @@
-const version:string = 'r12.0.5';
+const version: string = 'r12.1.0';
 
-export const Version = ():string => {
+export const Version = (): string => {
     if (version !== '') return version;
     return '(devel)';
 }
 
-export const IsSet = ():boolean => version !== '';
+export const IsSet = (): boolean => version !== '';
