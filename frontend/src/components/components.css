@@ -322,8 +322,8 @@ input:focus {
 .card-container {
     perspective: 1000px;
     position: relative;
-    width: 300px;
-    height: 420px;
+    width: 20rem;
+    height: 28rem;
     box-sizing: border-box;
 }
 
@@ -349,12 +349,12 @@ input:focus {
     align-items: center;
     justify-content: center;
     background-color: var(--panel-color);
-    border-radius: 5px;
+    border-radius: 0.5rem;
 }
 
 .card-front p {
-    margin-top: 15px;
-    font-size: 20px;
+    margin-top: 1rem;
+    font-size: 1.33rem;
     font-weight: normal;
     color: #dddddd;
 }
@@ -369,11 +369,5 @@ input:focus {
     position: absolute;
     top: 0;
     background-color: var(--panel-color);
-    border-radius: 5px;
-}
-
-@media screen and (max-width: 1200px) {
-    .card-container {
-        transform: scale(0.8);
-    }
+    border-radius: 0.5rem;
 }

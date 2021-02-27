@@ -221,18 +221,18 @@
 }
 
 .topSector {
-   display: flex;
-   top: 0;
-   width: 100%;
-   height: 200px;
-   flex: 1 1 auto;
-   flex-flow: column;
-   justify-content: center;
-   align-items: center;
+    display: flex;
+    height: 100px;
+    width: 100%;
+    flex: none;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .centralArea {
     width: 100%;
+    height: 0;
     display: flex;
     flex: 1 1 auto;
     justify-content: center;
@@ -241,9 +241,10 @@
 
 .lowerSector {
     width: 100%;
+    height: 100px;
     bottom: 0;
     display: flex;
-    flex: 0 1 150px;
+    flex: none;
     align-items: center;
     justify-content: center;
 }
@@ -284,13 +285,11 @@
         position: relative;
         width: 100vw;
         min-height: 45vh;
-        flex-grow: 1;
-        flex-shrink: 1;
-        flex-basis: auto;
+        flex: 1 1 auto;
     }
 
-    .lowerSector {
-        flex: 0 1 100px;
+    .topSector {
+        height: 70px;
     }
 
     .playerArea {

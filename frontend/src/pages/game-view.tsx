@@ -16,7 +16,7 @@ import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 
-import Card from '../components/card';
+import { Card } from '../components/card';
 import { HowToPlay } from '../components/about';
 import PlayerElement from '../components/player-element';
 import Dots from '../components/dots';
@@ -301,7 +301,7 @@ interface VoteMenuProps {
 
 const VoteMenu = React.memo(function ({currentVote, me, send}: VoteMenuProps) {
     return (
-        <div style={{display: 'flex', flexFlow: 'column', alignItems: 'center', justifyContent: 'center'}}>
+        <div style={{display: 'flex', flexFlow: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', top: '0'}}>
             <h1 style={{fontSize: 'auto', fontWeight: 'normal', color: '#eeeeee' }}>
                 <b>{currentVote.initiator.nickname}</b> wants to vote <b>{currentVote.target.nickname}</b>
             </h1>
@@ -457,7 +457,7 @@ export const GameView = ({me, roomName, send, state, leave, hasUserPlayed}: Deep
                         : state.endGame ? <EndGameMenu endGame={state.endGame} isHost={me.isHost} send={send} />
                         :
                         (
-                            <div style={{width: '100%', height: '100%', display: 'flex', flexFlow: 'column'}}>
+                            <div style={{width: '100%', height: 'calc(100% - 100px)', display: 'flex', flex: '1 1 auto', flexFlow: 'column'}}>
                                 <div className='centralArea'>
                                     {
                                         !state.currentVote ? <Card spy={me.isSpy || false} location={state.currentLocation} role={me.role} onOpen={() => setCardFlipped(true)}/> 

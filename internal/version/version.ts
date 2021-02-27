@@ -1,4 +1,4 @@
-const version: string = 'r12.1.0';
+const version: string = 'r12.1.1';
 
 export const Version = (): string => {
     if (version !== '') return version;
