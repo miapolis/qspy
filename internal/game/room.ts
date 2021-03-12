@@ -2,7 +2,6 @@ import { InfoPair } from '../words/words';
 import * as packager from '../words/packager';
 import { MAX_ROOM_MEMBER_COUNT } from '../server/server';
 import { EndGameState, StatePlayer } from '../protocol';
-import { Room as NetworkRoom } from '../server/server';
 
 interface WordList {
     Name: string,
@@ -44,7 +43,6 @@ export class Room { // Classroom (very funny)
         this.WordLists = GenerateDefaultWordPack();
     }
 
-    // Method can also be used to modify existing player's nickname
     public AddPlayer(id: string, nickname: string, isHost: boolean = false) {
         nickname = this.CreateSafeNickname(nickname);
         const discriminator = this.GenerateDiscriminator();

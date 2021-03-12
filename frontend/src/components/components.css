@@ -348,8 +348,10 @@ input:focus {
     flex-flow: column;
     align-items: center;
     justify-content: center;
-    background-color: var(--panel-color);
+    background: var(--panel-color);
+    transform: rotateY(0deg) translateZ(1px);
     border-radius: 0.5rem;
+    backface-visibility: hidden;
 }
 
 .card-front p {
@@ -363,11 +365,11 @@ input:focus {
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
-    transform: rotateY(180deg);
+    transform: rotateY(180deg) translateZ(1px);
     box-sizing: border-box;
     display: block;
     position: absolute;
     top: 0;
-    background-color: var(--panel-color);
+    background: var(--panel-color);
     border-radius: 0.5rem;
 }
