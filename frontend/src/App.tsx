@@ -13,16 +13,15 @@ import { WSC_Reason_Kicked, WSC_Reason_Room_Close } from './protocol';
 
 export interface LoadingResult {
   doneLoading: boolean;
-  roomName: string | undefined; 
+  roomID: string | null; 
   roomFound: boolean | undefined; // Will be undefined during menu
 } 
 
 function App () {
   let history = useHistory();
-  const [loadingResult, setLoadingResult] = React.useState<LoadingResult>({doneLoading: false, roomName: undefined, roomFound: undefined});
+  const [loadingResult, setLoadingResult] = React.useState<LoadingResult>({doneLoading: false, roomID: null, roomFound: undefined});
   const [nickname, setNickname] = React.useState<string | undefined>(undefined);
-  const [roomID, setRoomID] = React.useState<string | undefined>(undefined);
-  const [playerID, setPlayerID] = React.useState<string | undefined>(undefined); 
+  const [roomID, setRoomID] = React.useState<string | null>(null);
   const [returnError, setReturnError] = React.useState<string | undefined>(undefined);
   const leave = () => history.push('/'); // Reset back to the home page
   const kicked = (reason: string) => {
@@ -37,20 +36,21 @@ function App () {
     history.push('/'); 
   }
   
-  const onLoad = (roomName: string | undefined, roomFound: boolean | undefined) => { setLoadingResult({doneLoading: true, roomName: roomName, roomFound: roomFound}); }
-  const onDirectRoomLoad = async (roomName: string | undefined, roomFound: boolean | undefined) => {
-    setLoadingResult({doneLoading: true, roomName: roomName, roomFound: roomFound});
-    setRoomID(roomName);
+  const onLoad = (roomID: string | null, roomFound: boolean | undefined) => { setLoadingResult({doneLoading: true, roomID: roomID, roomFound: roomFound}); }
+  const onDirectRoomLoad = async (roomID: string | null, roomFound: boolean | undefined) => {
+    setLoadingResult({doneLoading: true, roomID: roomID, roomFound: roomFound});
+    if (!roomID) { history.push('/'); return; }
+    setRoomID(roomID);
+    history.push('/room'); // Hide the roomID
   }
 
-  const onDirectLogin = (name: string, playerID: string) => { setNickname(name); setPlayerID(playerID); } // No need to set history since user is already in room
-  const login = (roomId: string, name: string, playerID: string) => {
-    setLoadingResult({doneLoading: true, roomName: roomID, roomFound: true}); // If the user goes through the menu (not using a direct link) the room is always found
-    setRoomID(roomId);
-    setNickname(name);
-    setPlayerID(playerID);
+  const onDirectLogin = (name: string) => { setNickname(name); } // No need to set history since user is already in room
+  const login = (roomID: string, nickname: string) => {
+    setLoadingResult({doneLoading: true, roomID: roomID, roomFound: true}); // If the user goes through the menu (not using a direct link) the room is always found
+    setRoomID(roomID);
+    setNickname(nickname);
 
-    try { history.push(`/room/${roomId}`); } catch { window.location.reload(); }
+    try { history.push(`/room`); } catch { window.location.reload(); }
   }
   
   return (
@@ -59,11 +59,11 @@ function App () {
         <Route exact path='/'>
           { loadingResult.doneLoading ? <Entry onLogin={login} error={returnError}/> : <Loading callbackFunc={onLoad}/> }
         </Route>
-        <Route path='/room/:id'> {/* All properties need to be defined to send a ws request */}
+        <Route path='/room'> {/* All properties need to be defined to send a ws request */}
           { loadingResult.doneLoading ? (
             loadingResult.roomFound == true && roomID ?
-          (playerID ? <Game roomID={roomID} nickname={nickname?nickname:'a'} playerID={playerID} leave={leave} kicked={kicked}/> :<
-            DirectLogin roomName={roomID} callbackFunc={onDirectLogin}/>) :
+          (nickname ? <Game roomID={roomID} nickname={nickname ? nickname : ''} leave={leave} kicked={kicked}/> :
+          <DirectLogin roomID={roomID} callbackFunc={onDirectLogin}/>) :
           <NotFoundPage message='Room not found.'/>
           ) : <Loading callbackFunc={onDirectRoomLoad} /> }
         </Route>

@@ -6,31 +6,66 @@ type Discriminator = number;
 export class RoomRequest {
     public nickname: string;
     public roomName: string;
+    public roomPass: string;
     public create: boolean;
 
-    constructor(nickname: string, roomName: string, create: boolean) {
+    constructor (nickname: string, roomName: string, roomPass: string, create: boolean) {
         this.nickname = nickname;
         this.roomName = roomName;
+        this.roomPass = roomPass;
         this.create = create;
     }
 
-    public Sanitize () {
-        this.nickname = this.nickname.trim();
-        this.roomName = this.roomName.trim();
+    public Sanitize (): boolean { // Returns whether or not sanitization failed
+        try {
+            this.nickname = this.nickname.trim();
+            this.roomName = this.roomName.trim();
+            return true;
+        } catch { return false; }
     }
 }
 
-export const Valid = (r: RoomRequest): [string, boolean, number | undefined] => { // Last parameter specifies which input should be marked as incorrect
-    if (r.nickname.length === 0) return ['Nickname cannot be empty.', false, 0]; 
-    if (r.nickname.length > 16) return ['Nickname too long.', false, 0];
-    if (!r.nickname.replace(RX_WHITESPACE, '').length) return ['Nickname cannot be whitespace.', false, 0];
-    if (r.roomName.length === 0) return ['Room name cannot be empty.', false, 1];
+export const ValidNickname = (n: string): [string, boolean, number | undefined] => {
+    if (n.length === 0) return ['Nickname cannot be empty.', false, 0]; 
+    if (n.length > 16) return ['Nickname too long.', false, 0];
+    if (!n.replace(RX_WHITESPACE, '').length) return ['Nickname cannot be whitespace.', false, 0];
+    return ['', true, undefined];
+}
+
+export const ValidRoomRequest = (r: RoomRequest): [string, boolean, number | undefined] => { // Last parameter specifies which input should be marked as incorrect
+    const validNickname = ValidNickname(r.nickname);
+    if (!validNickname[1]) return validNickname;
 
     if (r.create) { // Doesn't make sense to display these error messages if the user is looking for a room
         if (r.roomName.length > 20) return ['Room name too long.', false, 1];
         if (!r.roomName.replace(RX_WHITESPACE, '').length) return ['Room name cannot be whitespace.', false, 1]; 
         if (!RX_LETTERS_NUMBERS_HYPHENS.test(r.roomName)) return ['Room name may only contain letters, numbers, and hyphens.', false, 1];
+        if (r.roomPass.length > 20) return ['Room password too long.', false, 2];
+
     }
+    return ['', true, undefined];
+}
+
+export class JoinRequest { // Strictly for direct-login users
+    public nickname: string;
+    public roomID: string;
+
+    constructor (nickname: string, roomID: string) {
+        this.nickname = nickname;
+        this.roomID = roomID;
+    }
+
+    public Sanitize (): boolean {
+        try {
+            this.nickname = this.nickname.trim();
+            return true;
+        } catch { return false; }
+    }
+}
+
+export const ValidJoinRequest = (j: JoinRequest): [string, boolean, number | undefined] => {
+    const validNickname = ValidNickname(j.nickname);
+    if (!validNickname[1]) return validNickname;
     return ['', true, undefined];
 }
 
@@ -104,7 +139,7 @@ export interface VoteState {
     voteCompleted: boolean;
 }
 
-export interface EndGameState { // TODO: Add reason for why game ended (timer, vote, guess)
+export interface EndGameState {
     revealedSpy: StatePlayer | undefined;
     location: string;
     guessedLocation: undefined | string;
@@ -123,7 +158,6 @@ export interface RoomState {
 }
 
 export interface LocalPlayer {
-    playerID: string;
     discriminator: Discriminator;
     nickname: string;
     isHost: boolean;
@@ -143,11 +177,9 @@ export interface StatePlayer {
 
 export class WSQuery {
     public roomID: string;
-    public playerID: string;
     public nickname: string;
 
-    constructor(roomID: string, playerID: string, nickname: string) {
-        this.playerID = playerID;
+    constructor(roomID: string, nickname: string) {
         this.roomID = roomID.trim();
         this.nickname = nickname.trim();
     }

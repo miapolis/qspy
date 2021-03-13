@@ -29,12 +29,12 @@ function useSender(dispatch: (action: ClientPacket) => void) {
 
 const reconnectAttempts = 2;
 
-function useWS(roomID:string, playerID:string, nickname:string, dead: () => void, onOpen: () => void, closed: (reason: string) => void) {
+function useWS(roomID:string, nickname:string, dead: () => void, onOpen: () => void, closed: (reason: string) => void) {
     const didUnmont = React.useRef(false);
     const retry = React.useRef(0);
 
     return useWebSocket(socketUrl, {
-        queryParams: { roomID: roomID, playerID: playerID, nickname:nickname, qspyVersion: qspyVersion },
+        queryParams: { roomID: roomID, nickname: nickname, qspyVersion: qspyVersion },
         onMessage: () => retry.current = 0,
         onOpen,
         onClose: (e: CloseEvent) => { 
@@ -75,7 +75,6 @@ function useStateReducer (sendPacket: (r: ClientPacket) => void) {
 export interface GameProps {
     roomID: string;
     nickname: string;
-    playerID: string; // Needs to be defined (otherwise in a different state)
     leave: () => void;
     kicked: (reason: string) => void;
 }
@@ -83,7 +82,7 @@ export interface GameProps {
 export const Game = (props: GameProps) => {
     const nickname = React.useRef(props.nickname); 
     const [hasPlayed, setHasPlayed] = useLocalStorage<boolean>('hasPlayed', false);
-    const { sendJsonMessage, lastJsonMessage } = useWS(props.roomID, props.playerID, nickname.current, props.leave, () => {}, (reason: string) => {
+    const { sendJsonMessage, lastJsonMessage } = useWS(props.roomID, nickname.current, props.leave, () => {}, (reason: string) => {
         props.kicked(reason); // Kicked refers to kicked from the room (could be because of inactivity or other reasons, not just host kicking)
     });
     const reducer = useStateReducer(sendJsonMessage);
@@ -109,12 +108,12 @@ export const Game = (props: GameProps) => {
         }
     }, [lastJsonMessage]);
 
-    if (!state || !props.playerID) { return(<div className='appMount'></div>); }
+    if (!state || !props.roomID) { return(<div className='appMount'></div>); }
 
     return (
         <UserContext.Provider value={state.me.isHost}>
             <GameView 
-            roomName={props.roomID} 
+            roomID={props.roomID} 
             send={send} 
             state={state.roomState} 
             me={state.me} 

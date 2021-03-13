@@ -1,7 +1,7 @@
 // ARCHITECTURE
 // Client sends simple packets with few parameters
 // Server sends the entire state of game
-import myzod, { Infer, string } from 'myzod';
+import myzod, { Infer } from 'myzod';
 import { DeepReadonly } from 'ts-essentials';
 
 // Messages from client to server
@@ -48,10 +48,16 @@ export const WSC_Reason_Room_Close = 'ROOM_CLOSED';
 // STATE DEFINITIONS 
 export type RoomResponse = DeepReadonly<Infer<typeof RoomResponse>>;
 export const RoomResponse = myzod.object({ // Add more with passwords?
-    playerID: myzod.string().optional().nullable(),
+    roomID: myzod.string().optional().nullable(),
     error: myzod.string().optional().nullable(),
     mistake: myzod.number().optional().nullable() // Used for highlighting the input field where the user set invalid data
 });
+
+export type JoinResponse = DeepReadonly<Infer<typeof JoinResponse>>;
+export const JoinResponse = myzod.object({
+    error: myzod.string().optional().nullable(),
+    mistake: myzod.number().optional().nullable()
+})
 
 export type StatePlayer = DeepReadonly<Infer<typeof StatePlayer>>;
 export const StatePlayer = myzod.object({

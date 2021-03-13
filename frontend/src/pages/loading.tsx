@@ -7,15 +7,15 @@ import { checkOutdated } from '../common';
 import { version } from '../metadata.json';
 
 interface AppProps {
-    callbackFunc: (roomName: string | undefined, roomFound: boolean | undefined) => void;
+    callbackFunc: (roomID: string | null, roomFound: boolean | undefined) => void;
 }
 
 export default function Loading (props: AppProps) { // Loading only active on application entry
     React.useEffect(() => {
         setTimeout(async () => {
-            if (window.location.pathname.startsWith('/room/')) { // For people that were sent a direct '/room/roomname' url
+            if (window.location.pathname.endsWith('/room')) { // For people that were sent a direct '/room?roomID=[...]' url
                 const headers = { 'X-QSPY-VERSION': version };
-                const id = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+                const id = new URLSearchParams(window.location.search).get('id');
                 const query = querystring.stringify({roomID: id});
 
                 const response = await fetch('/api/exists?' + query, { headers });
@@ -23,7 +23,7 @@ export default function Loading (props: AppProps) { // Loading only active on ap
                 await response.text();
 
                 props.callbackFunc(id, response.ok);
-            } else props.callbackFunc(undefined, undefined); // Data isn't set prior to form submission
+            } else props.callbackFunc(null, undefined); // Data isn't set prior to form submission
         }, 1000);
     }, []);
 

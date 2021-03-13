@@ -10,6 +10,7 @@ import * as metrics from './metrics';
 import bodyParser from 'body-parser';
 import { Mutex } from 'async-mutex';
 import { v4 as uuidv4 } from 'uuid';
+import { Generator } from '../id';
 
 import { Room as GameRoom } from '../game/room';
 import { server as appServer } from '../main';
@@ -29,12 +30,13 @@ const wss = new websocket.server({
 });
 
 export class Server {
-    private clientCount:number;
-    private roomCount:number;
-    private rooms:Map<string, Room>;
-    private roomIDs:Map<string, Room>;
+    private clientCount: number;
+    private roomCount: number;
+    private rooms: Map<string, Room>;
+    private roomIDs: Map<string, Room>;
 
-    private mutex:Mutex;
+    private mutex: Mutex;
+    private roomIDGenerator: Generator;
 
     constructor() {
         this.clientCount = 0;
@@ -43,17 +45,20 @@ export class Server {
         this.rooms = new Map<string, Room>();
         this.roomIDs = new Map<string, Room>();
         this.mutex = new Mutex();
+        this.roomIDGenerator = new Generator(this.CreateSalt());
 
         this.Run();
     }
 
-    public async CreateRoom (name:string):Promise<[Room?, string?]> {
+    public async CreateRoom (name: string, password: string): Promise<[Room?, string?]> {
         const release = await this.mutex.acquire();
         try {
             if (this.roomCount > MAX_ROOMS) return [undefined, 'Too many rooms.'];
             if (this.rooms.has(name)) return [undefined, 'Room already exists.'];
+
+            const id = this.roomIDGenerator.Next();
             
-            const room = new Room(name);
+            const room = new Room(name, password, id);
             this.rooms.set(name, room);
             this.roomIDs.set(room.GetID(), room);
             
@@ -68,10 +73,17 @@ export class Server {
         } finally { release(); }
     }
 
-    public async FindRoom (name: string):Promise<Room | undefined> {
+    public async FindRoom (name: string): Promise<Room | undefined> {
         const release = await this.mutex.acquire();
         try {
             return this.rooms.get(name);
+        } finally { release(); }
+    }
+
+    public async FindRoomByID (id: string): Promise<Room | undefined> {
+        const release = await this.mutex.acquire();
+        try {
+            return this.roomIDs.get(id);
         } finally { release(); }
     }
 
@@ -105,27 +117,32 @@ export class Server {
         } finally { release(); }
     }
 
+    private CreateSalt () {
+        const v = Math.floor((new Date()).getTime() / 1000);
+        return v.toString();
+    }
+
     public ClientCount = () => this.clientCount;
     public RoomCount = () => this.clientCount;
 }
 
 export class Room {
     private Name: string;
+    private Password: string;
+    private ID: string;
     private ClientCount: number;
-    private ID:string;
-    private PlayerIDPool: Array<string>;
-    private Players:Map<string, websocket.connection>;
+    private Players: Map<string, websocket.connection>;
     private LastSeen: Date;
 
-    private mutex:Mutex;
+    private mutex: Mutex;
 
-    private GameRoom:GameRoom;
+    private GameRoom: GameRoom;
 
-    constructor(name:string) {
+    constructor(name: string, password: string, id: string) {
         this.Name = name;
+        this.Password = password;
+        this.ID = id;
         this.ClientCount = 0;
-        this.ID = uuidv4();
-        this.PlayerIDPool = new Array<string>();
         this.Players = new Map<string, websocket.connection>();
         this.LastSeen = new Date();
         this.mutex = new Mutex();
@@ -137,14 +154,8 @@ export class Room {
         const release = await this.mutex.acquire();
         try {
             let playerID = uuidv4();
-            this.PlayerIDPool.push(playerID);
             return playerID;
         } finally { release(); }
-    }
-
-    public async ValidPlayerID (playerID: string): Promise<boolean> {
-        const release = await this.mutex.acquire();
-        try { return this.PlayerIDPool.includes(playerID); } finally { release(); }
     }
 
     public async HandleConnection (playerID: string, nickname: string, conn: websocket.connection) {
@@ -181,7 +192,6 @@ export class Room {
 
     private RemovePlayer (playerID: string) { 
         this.Players.delete(playerID);
-        this.PlayerIDPool.splice(this.PlayerIDPool.indexOf(playerID), 1);
         this.ClientCount--;
     }
 
@@ -347,8 +357,9 @@ export class Room {
         return state;
     }
 
-    public GetID = () => this.ID;
     public GetName = () => this.Name;
+    public GetPassword = () => this.Password;
+    public GetID = () => this.ID;
     public GetClientCount = () => this.ClientCount;
     public GetLastSeen = () => this.LastSeen;
     public HasStarted = () => this.GameRoom.Started || this.GameRoom.IsStarting;
@@ -356,7 +367,6 @@ export class Room {
     public Cancel = () => {
         this.Players.forEach(conn => { conn.close(1000, protocol.WSC_Reason_Room_Close); metrics.RemoveClient(); });
         this.Players.clear();
-        this.PlayerIDPool = [];
         this.Name = '';
         this.ClientCount = 0;
         this.ID = '';
@@ -365,11 +375,11 @@ export class Room {
 }
 
 const originIsAllowed = (origin:any): boolean => {
-    if (origin === 'http://localhost:5000' || origin === 'https://qspy.xyz') return true
+    if (origin === 'http://localhost:5000' || origin === 'http://localhost:3000' || origin === 'https://qspy.xyz') return true
     return false;
 }
 
-wss.on('request', async (request:websocket.request) => {
+wss.on('request', async (request: websocket.request) => {
     if (!originIsAllowed(request.origin)) {
         request.reject();
         return;
@@ -377,24 +387,24 @@ wss.on('request', async (request:websocket.request) => {
 
     const httpReq = request.httpRequest;
     const search = httpReq.url?.substring(httpReq.url.indexOf('?'));
-    let roomID, playerID, nickname;
+    let roomID, nickname;
     try { 
         const params = new URLSearchParams(search); 
         roomID = params.get('roomID'); 
-        playerID = params.get('playerID');
         nickname = params.get('nickname');
     } catch { request.reject(400); return; }
 
-    if (!roomID || !playerID || !nickname) { request.reject(400); return; }
-    const wsQuery = new WSQuery(roomID, playerID, nickname);
+    if (!roomID || !nickname) { request.reject(400); return; }
+    const wsQuery = new WSQuery(roomID, nickname);
     const valid = wsQuery.Valid();
     if (valid[1] === false) { request.reject(400, valid[0]); return; }
 
-    const room = await appServer.FindRoom(roomID);
+    const room = await appServer.FindRoomByID(roomID);
     if (!room) { request.reject(400); return; }
-    if (!await room.ValidPlayerID(playerID)) { request.reject(400); return; }
     if (room.HasStarted()) { request.reject(403); return; }
     if (room.GetClientCount() >= MAX_ROOM_MEMBER_COUNT) { request.reject(403); return; }
+
+    const playerID = await room.GeneratePlayerID();
 
     var connection = request.accept('', request.origin);
     room.HandleConnection(playerID, nickname, connection);

@@ -4,15 +4,15 @@ import './pages.css';
 import Input from '../components/input';
 import FormButton from '../components/form-button';
 import { checkOutdated, assertIsDefined } from '../common';
-import { RoomResponse } from '../protocol';
+import { JoinResponse } from '../protocol';
 import { version } from '../metadata.json';
 
 export interface DirectLoginProps {
-    roomName: string;
+    roomID: string;
     callbackFunc: (nickname: string, playerID: string) => void;
 }
 
-export default function DirectLogin({roomName, callbackFunc}:DirectLoginProps) {
+export default function DirectLogin({roomID, callbackFunc}:DirectLoginProps) {
     const submitButton = React.createRef<FormButton>();
 
     const [nameFailed, setNameFailed] = React.useState<boolean>(false);
@@ -33,28 +33,30 @@ export default function DirectLogin({roomName, callbackFunc}:DirectLoginProps) {
 
         setTimeout(async () => {
             let response: Response | undefined;
-            let roomResponse: RoomResponse | undefined;
+            let joinResponse: JoinResponse | undefined;
             const headers = { 'X-QSPY-VERSION': version, "Content-Type": "application/json" };
 
             try {
-                const reqBody = JSON.stringify({ nickname: name, roomName: roomName, create: false });
-                response = await fetch('/api/room', { method: 'POST', body: reqBody, headers });
+                const reqBody = JSON.stringify({ nickname: name, roomID: roomID, create: false });
+                response = await fetch('/api/join', { method: 'POST', body: reqBody, headers });
                 if (checkOutdated(response)) { return; }
                 const body = await response.json();
-                roomResponse = RoomResponse.parse(body);
+                joinResponse = JoinResponse.parse(body);
             } catch { }
 
             assertIsDefined(response);
 
-            if ((response == undefined || response == null) || !response.ok || !roomResponse || !roomResponse.playerID) { // So many things could go wrong...
-                setError(roomResponse?.error || 'An unknown error occurred.');
+            if (!response || !response.ok || !joinResponse) {
+                setError(joinResponse?.error || 'An unknown error occurred.');
+                if (joinResponse?.mistake) setNameFailed(true)
+
                 setShowDots(false);
                 submitButton.current?.reset();
                 return;
             }
 
             setError(undefined);
-            callbackFunc(name, roomResponse.playerID);
+            callbackFunc(name, roomID);
         }, 1000);
     }
 

@@ -7,7 +7,7 @@ import { checkOutdated, assertIsDefined } from '../common';
 import { RoomResponse } from '../protocol';
 
 export interface EntryProps {
-    onLogin: (roomId:string, name:string, playerID:string) => void;
+    onLogin: (roomID: string, nickname: string) => void;
     error: string | undefined; // There might be an error when we come back to this page
 }
 
@@ -37,14 +37,14 @@ export default class Entry extends React.Component<EntryProps, EntryState> {
         );
     }
 
-    submit = (data:FormData):void => {
+    submit = (data: FormData): void => {
         setTimeout(async () => {
             let response: Response | undefined;
             let roomResponse: RoomResponse | undefined;
             const headers = { 'X-QSPY-VERSION': version, "Content-Type": "application/json" };
 
             try {
-                const reqBody = JSON.stringify({ nickname: data.name, roomName: data.roomName, create: data.create });
+                const reqBody = JSON.stringify({ nickname: data.name, roomName: data.roomName, roomPass: data.roomPass, create: data.create });
                 response = await fetch('/api/room', { method: 'POST', body: reqBody, headers });
                 if (checkOutdated(response)) { return; }
                 const body = await response.json();
@@ -53,7 +53,7 @@ export default class Entry extends React.Component<EntryProps, EntryState> {
 
             assertIsDefined(response);
 
-            if ((response == undefined || response == null) || !response.ok || !roomResponse || !roomResponse.playerID) { // So many things could go wrong...
+            if ((response == undefined || response == null) || !response.ok || !roomResponse || !roomResponse.roomID) { // So many things could go wrong...
                 this.setState({errorMessage: roomResponse?.error || 'An unknown error occurred.'});
                 if (roomResponse?.mistake != null && roomResponse.mistake != undefined) this.form.current?.forceErrorProperty(Number(roomResponse.mistake));
                 this.form.current?.reset();
@@ -61,7 +61,7 @@ export default class Entry extends React.Component<EntryProps, EntryState> {
             }
 
             this.setState({errorMessage: undefined});
-            this.props.onLogin(data.roomName.trim(), data.name, roomResponse.playerID);
+            this.props.onLogin(roomResponse.roomID, data.name);
         }, 1000);
     }
 }

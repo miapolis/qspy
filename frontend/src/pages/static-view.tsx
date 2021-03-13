@@ -7,6 +7,7 @@ const send: Sender = new Proxy({}, { get: () => {} }) as Sender;
 
 const props = {
     roomName: '__STATIC__',
+    roomID: '0',
     send: send,
     me: {
         playerID: '0',
@@ -94,7 +95,7 @@ const props = {
 export const StaticView = () => {
     return (
         <UserContext.Provider value={true}>
-            <GameView roomName={props.roomName} send={props.send} me={props.me} state={props.state} leave={() => {}} hasUserPlayed={true}/>
+            <GameView roomID={props.roomID} send={props.send} me={props.me} state={props.state} leave={() => {}} hasUserPlayed={true}/>
         </UserContext.Provider>
     );
 }

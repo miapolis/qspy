@@ -79,7 +79,7 @@ const CornerButtons = React.memo(function CornerButtons({roomID, leave}:{roomID:
         <>
             <div className={classes.wrapper}>
                 <Button type='button' onClick={leave} startIcon={<ArrowBack />} className={classes.button}>Leave</Button>
-                <Button type='button' onClick={() => copy(window.location.href)} startIcon={<Link />} className={classes.button}>Copy Room URL</Button>
+                <Button type='button' onClick={() => copy(`${window.location.origin}/room?id=${roomID}`)} startIcon={<Link />} className={classes.button}>Copy Room URL</Button>
             </div>
         </>
     );
@@ -409,7 +409,7 @@ const EndGameMenu = React.memo(function ({endGame, isHost, send}:EndGameMenuProp
 });
 
 export interface GameViewProps {
-    roomName: string;
+    roomID: string;
     send: Sender;
     me: LocalPlayer;
     state: RoomState;
@@ -417,7 +417,7 @@ export interface GameViewProps {
     hasUserPlayed: boolean;
 }
 
-export const GameView = ({me, roomName, send, state, leave, hasUserPlayed}: DeepReadonly<GameViewProps>) => {
+export const GameView = ({me, roomID, send, state, leave, hasUserPlayed}: DeepReadonly<GameViewProps>) => {
     const playerCount = state.players.length;
     const [cardFlipped, setCardFlipped] = React.useState(false);
     const [voteValue, setVoteValue] = React.useState<string>('');
@@ -442,7 +442,7 @@ export const GameView = ({me, roomName, send, state, leave, hasUserPlayed}: Deep
         <ThemeProvider theme={theme}>
             <div className='appMount'>
                 <div className='topHeader'>
-                    <CornerButtons roomID={roomName} leave={leave} />
+                    <CornerButtons roomID={roomID} leave={leave} />
                     <HowToPlay hasPlayed={hasUserPlayed} style={{position: 'absolute', margin: '0.5rem', top: 0, right: 0}} />
                 </div>
                 <div className='mainArea'>
