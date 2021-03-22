@@ -168,10 +168,11 @@ export class Room { // Classroom (very funny)
         }
 
         // It's a little bit more involved if we have to reduce the selection to 30
-        // We use 29 here because we need to include the actual location as well
-        const slice = this.GetMultipleRandomValues(words.filter(x => x.Location !== this.CurrentLocation), 29);
+        // We need to get 30 random dummy locations and then replace one with the actual location
+        const slice = this.GetMultipleRandomValues(words.filter(x => x.Location !== this.CurrentLocation), 30);
         const locations = slice.map(x => x.Location);
-        locations.push(this.CurrentLocation);
+        locations[Math.floor(Math.random() * locations.length)] = this.CurrentLocation;
+
         return locations;
     }
 
