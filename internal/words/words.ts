@@ -3,8 +3,8 @@ export interface InfoPair {
     Roles: string[] | undefined; // Users can specify no roles if they want
 }
 
-const MAX_LOCATION_LENGTH = 20;
-const MAX_ROLE_LENGTH = 22;
+const MAX_LOCATION_LENGTH = 25;
+const MAX_ROLE_LENGTH = 25;
 
 export interface ListResult { result: InfoPair[] | undefined, error: string | undefined }
 export const NewListFromFile = (data: string): ListResult => {
