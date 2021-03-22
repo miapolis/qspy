@@ -1,24 +1,29 @@
 Airplane: Flight Attendant, First Class Passenger, Economy Passenger, Captain, Co-Pilot, Stewardess, Air Marshall, Mechanic
 Bank: Accountant, Robber, Customer, General Manager, Security Guard, Teller, Consultant, Armored Car Driver
+Bar: Bartender, Customer, Bar Manager, Server, Janitor, Drunk Person, Host, Bouncer, DJ
 Beach: Beach Waitress, Surfer, Lifeguard, Thief, Beachgoer, Ice Cream Truck Driver, Beach Photographer, Seagull
 Casino: Bartender, Security Guard, Bouncer, Manager, Hustler, Dealer, Gambler, Slot Attendant
 Cemetery: Grave Robber, Poet, Mourning Person, Relative, Grave Digger, Flower Seller, Gatekeeper, Dead Person
 Circus: Acrobat, Animal Trainer, Clown, Juggler, Magician, Audience Member, Tightrope Walker, Dancer, Unicyclist
 Corporate Party: Entertainer, Manager, Boss, Unwelcomed Guest, Secretary, Accountant, Delivery Boy, Owner
 Day Spa: Customer, Stylist, Manicurist, Dermatologist, Beautician, Masseuse, Makeup Artist, Spa Therapist
+Department Store: Cashier, Store Manager, Janitor, Buyer, Sales Associate, Assistant Store Manager, Merchandiser, Stocker
 Embassy: Ambassador, Government Official, Tourist, Refugee, Diplomat, Secretary, Security Guard, Language Specialist
 Gas Station: Manager, Car Owner, Car Wash Operator, Electrician, Mechanic, Tire Specialist, Shop Cashier, Shop Janitor
 Hospital: Anesthesiologist, Nurse, Doctor, Patient, Intern, Surgeon, Therapist, Receptionist
 Hotel: Doorman, Security Guard, Manager, Housekeeper, Customer, Bartender, Bellman, Restaurant Chef, Manager
+Mansion: Maid, Chef, Parent, Nanny, Gardener, Child, Family Dog, Servant, Butler
 Military Base: Soldier, Sniper, Colonel, Medic, Deserter, Officer, General, Commander
 Movie Studio: Director, Actor, Camera Operator, Costume Artist, Producer, Sound Engineer, Stuntman, Script Supervisor, Stunt Coordinator
 Museum: Ticket Seller, Student, Security Guard, Photographer, Tourist, Teacher, Speaker, Art Critic
 Ocean Liner: Rich Passenger, Captain, Bartender, Musician, Waiter, Cruise Director, Expedition Leader, Mechanic
+Office: Boss, Client, Employee, Janitor, Company Fish, Secretary, Office Manager, Accountant, Analyst
 Passenger Train: Train Attendant, Passenger, Engineer, Restaurant Chef, Border Patrol, Train Operator, Stoker, Mechanic
 Pirate Ship: Cook, Sailor, Prisoner, Cabin Boy, Captain, First Mate, Quartermaster, Gunner, Powder Monkey, Boatswain
 Polar Station: Geologist, Biologist, Radioman, Hydrologist, Meteorologist, Medic, Doctor, Expedition Leader
 Police Station: Detective, Forensics Scientist, Criminal, Police Officer, Patrol Officer, Lawyer, Journalist, Evidence Technician
 Prison: CCTV Operator, Security Guard, Visitor, Criminal, Lawyer, Janitor, Officer, Jailkeeper
+Resort: Maid, Owner, Child, Security Guard, Pool Cleaner, Swimmer, Chef, Waiter, Lifeguard
 Restaurant: Waiter, Cook, Chef, Customer, Dishwasher, Receptionist, Kitchen Manager, Bartender
 School: Student, Principal, Teacher, Janitor, Cafeteria Lady, Visiting Parent, Maintenance Man, Security Guard
 Space Station: Astronaut, Alien, Scientist, Medic, Doctor, Researcher, Engineer, Commercial Tourist
@@ -27,4 +32,5 @@ Subway: Tourist, Subway Operator, Ticket Inspector, Pickpocket, Cleaner, Busines
 Supermarket: Cashier, Janitor, Butcher, Shelf Stocker, Customer, Security Guard, Manager, Bagger
 Theater: Dancer, Usher, Audience Member, Coat Checker, Cashier, Director, Orchestra Member, Actor
 University: Dean, Student, Graduate, Janitor, Maintenance Man, Professor, Psychologist, Researcher
+Yoga Studio: Studio Manager, Studio Owner, Yoga Instructor, DJ, Yoga Therapist, Client, Yoga Content Writer, Studio Marketer
 Zoo: Zookeeper, Photographer, Child, Visitor, Food Vendor, Cashier, Researcher, Veterinarian, Tourist
