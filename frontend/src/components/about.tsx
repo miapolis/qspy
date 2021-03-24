@@ -83,50 +83,49 @@ export const HowToPlay = (props:{style?: React.CSSProperties, hasPlayed: boolean
                         </IconButton>
                         <h2 className={classes.h2} id='modal-title'>How to play</h2>
                         <p className={classes.p} id="modal-description">
-                            <b>QSpy</b> is a social deduction game where everyone is assigned a location 
-                            and a corresponding role, except for one person, who is the spy.
-                            Once everyone is assigned their location and role, the discussion begins.  
+                            <b>QSpy</b> is a social deduction game in which players work together to determine
+                            who the spy is between them.  
                         </p>
                         <br />
                         <p className={classes.p} id="modal-description">
-                            During the discussion, players take turns asking each other questions.
-                            Players try to ask questions that will help them find the spy, 
-                            while the spy tries to guess the location and stay undetected. 
-                            Players that are questioned must answer, and no follow up questions are allowed.
-                            Players are allowed to answer as vaguely or specifically as they want. 
-                            After a player answers a question, they cannot ask a question back to the person
-                            that originally asked them a question.
+                            <b>Gameplay:</b> When the game starts, everyone receives the same location and a unique role,
+                            except for one person who is the spy. All regular players want to find out who the spy
+                            is and vote them out before the spy guesses the location correctly and wins.
                         </p>
                         <br />
                         <p className={classes.p} id="modal-description">
-                            The round ends when the discussion timer is up. All players at any time can 
-                            put a player up for vote. When this occurs, all other players need to vote for if they are 
-                            in agreement or disagreement with this vote. Votes need to be <b>unanimous</b> in order to successfully
-                            vote out a suspected player, and end the round before the timer. 
-                            Each player can only put up another player for vote once per round.
-                            The spy can also at any time reveal themselves and guess the location, 
-                            and this will also end the round early.
+                        <b>Discussion:</b> Once everyone knows what they are, the discussion begins. During the discussion, players
+                        take turns asking each other questions. Players try to ask questions which will help them find the
+                        spy, while the spy wants to guess the location and stay undetected. For example, a player could ask
+                        another player, “What kind of colors do you see at this place?” or “Are children allowed at this place?” 
+                        Once a player has answered, they must ask a question to another player. Players can answer
+                        however they want, but they might be suspected of being the spy if they always answer too vaguely.
+                        Note that it is important to be discrete in your questions and answers during the discussion because
+                        the spy can easily win if everything is too obvious.
                         </p>
                         <br />
                         <p className={classes.p} id="modal-description">
-                            The round ends when the discussion timer is over, when players successfully vote 
-                            out another player, or when the spy makes a guess about the location. 
+                        <b>Voting and Rounds:</b> The round ends when the discussion timer is up. All players at any time can put a player
+                        up for vote. The rest of the players then vote for if they agree or disagree with the vote. Votes need
+                        to be <b>unanimous</b> to successfully vote out a suspected player and end the round before the timer. Each
+                        player can only put up another player for vote once per round. The spy can also guess the location at
+                        any time, and this will end the round early as well. 
+                        </p>
+                        <br />
+                        <p className={classes.p} id="modal-description">
+                        The round ends when the discussion timer is over, when players successfully vote out another player, or when the spy
+                        makes a guess about the location. Non-spy players can only win if they vote out the spy or if the spy guesses the
+                        location incorrectly, but the spy can win if the timer runs out or if they guess the location correctly. 
                         </p>
                         <br />
                         <p className={classes.p} id="modal-description">
                             Spy Victory:<br />
                             • The spy gets <b>2 points</b> if the round ends and no one is voted out<br />
                             • The spy gets <b>4 points</b> if someone that isn't the spy is voted out<br />
-                            • The spy gets <b>4 points</b> if they guess the location correctly<br /><br />
+                            • The spy gets <b>4 points</b> if they guess the location correctly, otherwise it is a non-spy victory<br /><br />
                             Non-Spy Victory:<br />
                             • Everyone except the spy gets <b>1 point</b><br />
                             • The player that initiated the successful vote for the spy gets <b>2 points</b>
-                        </p>
-                        <br />
-                        <p className={classes.p} id="modal-description">
-                            Optional Variation:<br />
-                            Players are only allowed to answer questions from the perspective of the role 
-                            on their location card. Players must answer as if they are their role.
                         </p>
                     </div>
                 </Fade>
