@@ -1,0 +1,13 @@
+# GROUP_NAME: Default Plus
+# GROUP_DESCRIPTION: Additional standard locations and roles similar to the default pack
+Coal Mine: Coal Miner, Exploration Geologist, Mine Geologists, Mine Supervisor, Site Manager, Drill Operator, Truck Operator, Grader Operator
+Construction Site: Construction Worker, Worker Manager, Architect, Engineer, Electrician, Supervisor, Police Officer, Passerby
+Dog Show: Judge, Show Coordinator, Dog Trainer, Animal Behaviorist, Dog Sitter, Dog Walker, Veterinarian, Photographer 
+Factory: Factory Manager, Factory Inspector, Assembly Line Worker, Technician, Factory Tour Guide, Robot Manager, Quality Checker, Warehouse Manager
+Library: Librarian, Student, Child, Parent, Speaker, Library Assistant, Computer Specialist, Janitor
+Jazz Club: Bartender, Musician, Club Manager, Dishwasher, Event Coordinator, Visitor, Janitor, Security Guard
+Music Concert: Security Guard, Singer, Audience Member, Ticket Checker, Event Coordinator, Production Manager, Stage Manager, Tour Coordinator
+Race Track: Racecar Driver, Racecar Technician, Medic, Event Parking Manager, Commentator, Crowd Member, Security Guard, Janitor
+Retirement Home: Old Person, Caretaker, Visitor, Receptionist, Janitor, Nurse, Executive Director, Event Organizer
+Stadium: Crowd Member, Referee, Athlete, Coach, Cheerleader, Event Coordinator, Security Guard, Ticket Checker
+Tour Bus: Tour Guide, Driver, Tourist, Chauffeur, Sales Associate, Bus Mechanic, Pedestrian, Loud Child

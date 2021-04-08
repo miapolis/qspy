@@ -236,6 +236,16 @@ export class Room {
                     this.SendToAll();
                     break;
                 }
+                case protocol.Method_UpdatePack:
+                { // UPDATE PACK
+                    let params = packet.params as protocol.Params_UpdatePack;
+                    if (!sender.isHost) return;
+                    if (this.GameRoom.Started || this.GameRoom.IsStarting) return;
+                    if (!this.GameRoom.UpdatePack(params.id, params.enabled)) return;
+                    
+                    this.SendToAll();
+                    break;
+                }
                 case protocol.Method_StartGame: 
                 { // START GAME
                     if (!sender.isHost) return;
@@ -293,8 +303,7 @@ export class Room {
                     if (!this.GameRoom.Started) return;
                     if (this.GameRoom.CurrentVote) return; // Spy cannot guess when there is a vote (possibly targeted at themselves)
                     if (this.GameRoom.EndGame) return; // Spy cannot guess after the game is already over
-                    this.GameRoom.HandleLocationGuess(params.guess);
-
+                    this.GameRoom.HandleLocationGuess(sender, params.guess);
                     this.SendToAll();
                     break;
                 }
@@ -332,13 +341,28 @@ export class Room {
 
     private CreateRoomStateFor (playerID: string): protocol.RoomState {
         const player = this.GameRoom.Players.get(playerID);
-
         let room = this.GameRoom;
+
+        let createdPacks = new Array<protocol.NoDataPack>();
+        for (let i = 0; i < room.WordLists.length; i++) {
+            const wordList = room.WordLists[i];
+            const pack = wordList.Pack;
+            createdPacks.push({
+                id: i,
+                name: pack.name,
+                description: pack.description,
+                locationCount: pack.locationCount,
+                roleCount: pack.roleCount,
+                enabled: wordList.Enabled
+            });
+        }
+
         let state:protocol.RoomState = {
             players: new Array<protocol.StatePlayer>(),
             started: room.Started,
             isStarting: room.IsStarting,
             timerLength: room.TimerLength,
+            packs: createdPacks,
             guessSelection: player?.isSpy ? room.GuessSelection : undefined,
             currentLocation: player?.isSpy ? undefined : room.CurrentLocation,
             currentVote: room.CurrentVote,

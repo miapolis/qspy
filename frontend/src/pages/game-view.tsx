@@ -1,7 +1,7 @@
 import React from 'react';
 import './pages.css';
 
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, IconButton, Input, RadioGroup } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControlLabel, IconButton, Input, RadioGroup } from '@material-ui/core';
 import { createMuiTheme, createStyles, makeStyles, Theme, ThemeProvider, withStyles } from '@material-ui/core/styles';
 import Radio from '@material-ui/core/Radio';
 import orange from '@material-ui/core/colors/orange';
@@ -17,6 +17,7 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 
 import { Card } from '../components/card';
+import CardSurface from '@material-ui/core/Card';
 import { HowToPlay } from '../components/about';
 import PlayerElement from '../components/player-element';
 import Dots from '../components/dots';
@@ -24,12 +25,13 @@ import Timer from '../components/timer';
 
 import copy from 'clipboard-copy';
 import { DeepReadonly } from 'ts-essentials';
-import { EndGameState, LocalPlayer, RoomState, StatePlayer, VoteState } from '../protocol';
+import { EndGameState, LocalPlayer, Pack, RoomState, StatePlayer, VoteState } from '../protocol';
 
 export interface Sender {
     changeNickname: (nickname: string) => void;
     kickPlayer: (discriminator: number) => void;
     changeTime: (time: number) => void;
+    updatePack: (id: number, enabled: boolean) => void;
     startGame: () => void;
     createVote: (target: number) => void;
     vote: (agreement: boolean) => void;
@@ -143,7 +145,7 @@ interface LocationDialogProps {
     onClose: () => void;
 }
 
-const LocationDialog = React.memo(function LocationDialog({isOpen, locations, send, onClose}:LocationDialogProps) {
+const LocationDialog = React.memo(function LocationDialog({isOpen, locations, send, onClose}: LocationDialogProps) {
     const [selectedLocation, setSelectedLocation] = React.useState<string | undefined>(undefined);
 
     const handleClose = (final: boolean) => {
@@ -179,6 +181,61 @@ const LocationDialog = React.memo(function LocationDialog({isOpen, locations, se
         </Dialog>
     );
 });
+
+interface PackSelectionDialogProps {
+    isOpen: boolean;
+    packs: readonly Pack[];
+    send: Sender;
+    onClose: () => void;
+}
+
+const PackSelectionDialog = React.memo(function PackSelectionDialog({isOpen, packs, send, onClose}: PackSelectionDialogProps) {
+    return (
+        <Dialog
+        open={isOpen}
+        fullWidth={true}
+        onClose={onClose}
+        maxWidth='md'
+        >
+            <DialogTitle>Packs</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    {`${packs.filter(x => x.enabled).reduce((a, b) => a + b.locationCount, 0)} locations,
+                    ${packs.filter(x => x.enabled).reduce((a, b) => a + b.roleCount, 0)} roles in selected packs`}
+                </DialogContentText>
+                <div style={{
+                    display: 'grid',
+                    gap: '15px',
+                    marginBottom: '10px',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))'
+                }}>
+                {packs.map(pack => {
+                    return <CardSurface style={{
+                        backgroundColor: '#444444',
+                        minHeight: '100px',
+                        padding: '15px'
+                    }}>
+                        <Button 
+                        variant={pack.enabled ? 'contained' : 'outlined'}
+                        color={pack.enabled ? 'primary' : undefined}
+                        style={{marginBottom: '10px'}}
+                        onClick={() => send.updatePack(pack.id, !pack.enabled)}
+                        >
+                            {pack.name}
+                        </Button>
+                        <p>{pack.description}</p>
+                    </CardSurface>
+                })}
+                </div>
+                <DialogContentText>More packs coming soon!</DialogContentText>
+            </DialogContent>
+            <Divider />
+            <DialogActions>
+                <Button onClick={() => onClose()}>CLOSE</Button>
+            </DialogActions>
+        </Dialog>
+    )
+})
 
 interface ChangeNicknameDialogProps {
     isOpen: boolean;
@@ -230,11 +287,14 @@ interface PreStartHeaderProps {
     starting: boolean;
     playerCount: number;
     timerLength: number;
+    packs: readonly Pack[];
     isHost: boolean;
     send: Sender;
 }
 
-const PreStartHeaders = React.memo(function PreStartHeaders({starting, playerCount, timerLength, isHost, send}:PreStartHeaderProps) {
+const PreStartHeaders = React.memo(function PreStartHeaders({starting, playerCount, timerLength, packs, isHost, send}:PreStartHeaderProps) {
+    const [packDialogOpen, setPackDialogOpen] = React.useState(false);
+
     const changeTime = (add: boolean) => {
         if (add) { 
             if (timerLength + 30 <= 600) send.changeTime(timerLength + 30); 
@@ -268,9 +328,22 @@ const PreStartHeaders = React.memo(function PreStartHeaders({starting, playerCou
                         left: '50%',
                         display: 'flex',
                         justifyContent: 'center',
+                        flexFlow: 'column',
                         transform: 'translateX(-50%)',
                         bottom: '90px',
                     }}>
+                        <Button 
+                        style={{marginBottom: '10px'}} 
+                        disabled={starting}
+                        onClick={() => setPackDialogOpen(true)}>
+                            Packs
+                        </Button>
+                        <PackSelectionDialog isOpen={packDialogOpen} packs={packs} send={send} onClose={() => setPackDialogOpen(false)}/>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            flexFlow: 'row'
+                        }}>
                         <IconButton onClick={() => changeTime(false)} size='small' style={{color: '#bbbbbb'}}>
                             <RemoveIcon />
                         </IconButton>
@@ -280,6 +353,7 @@ const PreStartHeaders = React.memo(function PreStartHeaders({starting, playerCou
                         <IconButton onClick={() => changeTime(true)} size='small' style={{color: '#bbbbbb'}}>
                             <AddIcon />
                         </IconButton>
+                        </div>
                     </div>
                     <PrimaryActionButton 
                     onClick={() => send.startGame()} 
@@ -375,7 +449,10 @@ const EndGameMenu = React.memo(function ({endGame, isHost, send}:EndGameMenuProp
         <div>
             <div style={{marginBottom: '20px', marginTop: '40px'}}>
                 <h1 style={{color: '#cccccc', fontWeight: 'normal', display: 'inline-block'}}>Spy:</h1>
-                <h1 style={{color: 'white', fontSize: '40px', display: 'inline-block', paddingLeft: '10px'}}>{endGame.revealedSpy.nickname}</h1><br/>
+                <h1 style={{color: 'white', fontSize: '40px', display: 'inline-block', paddingLeft: '10px'}}>
+                    {endGame.revealedSpy ? endGame.revealedSpy.nickname : 'Everyone'}
+                </h1>
+                <br/>
                 {
                     endGame.guessedLocation ? <div>
                         <h2 style={{color: '#cccccc', fontWeight: 'normal', display: 'inline-block', paddingTop: '10px'}}>Guess:</h2>
@@ -453,7 +530,13 @@ export const GameView = ({me, roomID, send, state, leave, hasUserPlayed}: DeepRe
                     </div> : null}
                     {state.isStarting ? <Dots verticalOffset={60}/> : null}
                     { 
-                        !state.started ? <PreStartHeaders starting={state.isStarting} playerCount={playerCount} timerLength={state.timerLength} isHost={me.isHost} send={send} />
+                        !state.started ? <PreStartHeaders 
+                        starting={state.isStarting} 
+                        playerCount={playerCount} 
+                        timerLength={state.timerLength} 
+                        packs={state.packs}
+                        isHost={me.isHost}
+                        send={send} />
                         : state.endGame ? <EndGameMenu endGame={state.endGame} isHost={me.isHost} send={send} />
                         :
                         (

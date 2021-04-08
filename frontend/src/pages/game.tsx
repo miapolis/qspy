@@ -18,6 +18,7 @@ function useSender(dispatch: (action: ClientPacket) => void) {
             changeNickname: (nickname: string) => dispatch({method: 'changeNickname', params: { nickname }}),
             kickPlayer: (discriminator: number) => dispatch({method: 'kickPlayer', params: { discriminator }}),
             changeTime: (time: number) => dispatch({method: 'changeTime', params: { time }}),
+            updatePack: (id: number, enabled: boolean) => dispatch({method: 'updatePack', params: { id, enabled }}),
             startGame: () => dispatch({method: 'startGame', params: {}}),
             createVote: (target: number) => dispatch({method: 'createVote', params: { target }}),
             vote: (agreement: boolean) => dispatch({method: 'vote', params: { agreement }}),

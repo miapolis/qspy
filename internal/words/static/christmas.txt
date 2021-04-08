@@ -1,0 +1,7 @@
+# GROUP_NAME: Christmas
+# GROUP_DESCRIPTION: Christmas themed locations and roles
+Igloo: Nearby Penguin, Moose, Polar Bear, Seal, Whale, Visitor, Expedition Leader, Fisherman
+North Pole: Santa Claus, Mrs. Claus, Ordinary Reindeer, Rudolph the Reindeer, Elf, Penguin, The Grinch, Seal
+Santa's Village: Child Resident, Adult Resident, Visiting Santa, Elf, Reindeer, Snowman, Storekeeper, Post Office Worker
+Santa's Workshop: Santa, Mrs. Claus, Reindeer, Snowman, Elf Making Tools, Elf Making Toys, Naughty Elf, Gingerbread Man
+The Grinch's Lair: The Grinch

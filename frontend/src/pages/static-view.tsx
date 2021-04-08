@@ -57,9 +57,19 @@ const props = {
                 isHost: false
             }
         ],
-        started: true,
+        started: false,
         isStarting: false,
         timerLength: 300,
+        packs: [
+            {
+                id: 0,
+                name: 'Default',
+                description: 'The default pack that contains all standard words',
+                locationCount: 30,
+                roleCount: 240,
+                enabled: true
+            }
+        ],
         guessSelection: [
             'Beach',
             'Restaurant',
@@ -76,6 +86,7 @@ const props = {
                 isHost: true
             },
             location: 'Beach',
+            spySchool: false,
             guessedLocation: 'Beach',
             newScores: [
                 {

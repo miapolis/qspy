@@ -1,3 +1,5 @@
+# GROUP_NAME: Default
+# GROUP_DESCRIPTION: The default pack with all standard locations
 Airplane: Flight Attendant, First Class Passenger, Economy Passenger, Captain, Co-Pilot, Stewardess, Air Marshall, Mechanic
 Bank: Accountant, Robber, Customer, General Manager, Security Guard, Teller, Consultant, Armored Car Driver
 Bar: Bartender, Customer, Bar Manager, Server, Janitor, Drunk Person, Host, Bouncer, DJ

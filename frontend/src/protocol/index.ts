@@ -20,6 +20,10 @@ const ClientPacket = myzod.union([
         params: myzod.object({ time: myzod.number() })
     }),
     myzod.object({
+        method: myzod.literal('updatePack'),
+        params: myzod.object({ id: myzod.number(), enabled: myzod.boolean() })
+    }),
+    myzod.object({
         method: myzod.literal('startGame'),
         params: myzod.object({})
     }),
@@ -90,11 +94,22 @@ export const VoteState = myzod.object({
 
 export type EndGameState = DeepReadonly<Infer<typeof EndGameState>>;
 export const EndGameState = myzod.object({ 
-    revealedSpy: StatePlayer,
+    revealedSpy: StatePlayer.optional(),
     location: myzod.string(),
+    spySchool: myzod.boolean(),
     guessedLocation: myzod.string().optional(),
     newScores: myzod.array(myzod.object({player: StatePlayer, addedScore: myzod.number()}))
 });
+
+export type Pack = DeepReadonly<Infer<typeof Pack>>;
+export const Pack = myzod.object({
+    id: myzod.number(),
+    name: myzod.string(),
+    description: myzod.string(),
+    locationCount: myzod.number(),
+    roleCount: myzod.number(),
+    enabled: myzod.boolean()
+})
 
 export type RoomState = DeepReadonly<Infer<typeof RoomState>>;
 export const RoomState = myzod.object({
@@ -102,6 +117,7 @@ export const RoomState = myzod.object({
     started: myzod.boolean(),
     isStarting: myzod.boolean(),
     timerLength: myzod.number(),
+    packs: myzod.array(Pack),
     guessSelection: myzod.array(myzod.string()).optional(),
     currentLocation: myzod.string().optional(),
     currentVote: VoteState.optional(),

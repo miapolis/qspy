@@ -1,3 +1,5 @@
+import { Pack } from "../words/words";
+
 const RX_LETTERS_NUMBERS_HYPHENS = /^[0-9A-Za-z\s\-]+$/;
 const RX_WHITESPACE = /\s/g;
 
@@ -112,6 +114,12 @@ export interface Params_ChangeTime {
     time: number;
 }
 
+export const Method_UpdatePack = 'updatePack';
+export interface Params_UpdatePack {
+    id: number;
+    enabled: boolean;
+}
+
 ///////////////////////////
 
 export const WSC_Reason_Kicked = 'KICK';
@@ -141,9 +149,19 @@ export interface VoteState {
 
 export interface EndGameState {
     revealedSpy: StatePlayer | undefined;
+    spySchool: boolean
     location: string;
     guessedLocation: undefined | string;
     newScores: { player: StatePlayer, addedScore: number }[];
+}
+
+export interface NoDataPack {
+    id: number;
+    name: string | undefined;
+    description: string | undefined;
+    locationCount: number;
+    roleCount: number;
+    enabled: boolean;
 }
 
 export interface RoomState {
@@ -151,6 +169,7 @@ export interface RoomState {
     started: boolean;
     isStarting: boolean;
     timerLength: number | undefined;
+    packs: NoDataPack[];
     guessSelection: string[] | undefined;
     currentLocation: string | undefined;
     currentVote: VoteState | undefined;
@@ -186,9 +205,9 @@ export class WSQuery {
 
     public Valid = (): [string, boolean] => {
         if (this.roomID === '') return ['Room ID cannot be empty.', false];
-        if (this.nickname.length === 0) return ['Nickname cannot be empty.', false]; 
+        if (this.nickname.length === 0) return ['Nickname cannot be empty.', false];
         if (this.nickname.length > 16) return ['Nickname too long.', false];
         if (!this.nickname.replace(/\s/g, '').length) return ['Nickname cannot be whitespace.', false];
-        return ['', true]; 
+        return ['', true];
     }
 }

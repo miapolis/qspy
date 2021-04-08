@@ -1,13 +1,12 @@
-import { InfoPair } from '../words/words';
+import { InfoPair, Pack, SPYSCHOOL_LOCATION } from '../words/words';
 import * as packager from '../words/packager';
 import { MAX_ROOM_MEMBER_COUNT } from '../server/server';
 import { EndGameState, StatePlayer } from '../protocol';
 
 interface WordList {
-    Name: string,
-    Custom: boolean,
-    Data: InfoPair[],
-    Enabled: boolean
+    Pack: Pack;
+    Custom: boolean;
+    Enabled: boolean;
 }
 
 interface Vote {
@@ -23,9 +22,11 @@ export class Room { // Classroom (very funny)
     public Started: boolean;
     public IsStarting: boolean;
     public Spy: Player | undefined;
+    public SpySchool: boolean | undefined;
     public GuessSelection: string[] | undefined;
     public TimerLength: number;
     public CurrentLocation: string | undefined;
+    public PreviousLocation: string | undefined;
     public CurrentVote: Vote | undefined;
     public VoteParticipants: Player[] | undefined; // Better for lookups
     public EndGame: EndGameState | undefined;
@@ -77,10 +78,13 @@ export class Room { // Classroom (very funny)
         this.Discriminators.delete(playerToRemove.discriminator);
         if (this.Started) { // More involved if a player leaves while there is an ongoing game
             if (playerToRemove.isSpy) {
+                // This behavior should also protect against a spy leaving during a round where the location
+                // is the SpySchool, and ending the game when in reality everyone is a spy
                 if (!this.Spy || !this.CurrentLocation) return;
                 const revealedSpy = this.CreateStatePlayer(this.Spy);
                 this.EndGame = { 
                     revealedSpy: revealedSpy, 
+                    spySchool: false,
                     location: this.CurrentLocation, 
                     guessedLocation: undefined,
                     newScores: new Array() 
@@ -125,16 +129,40 @@ export class Room { // Classroom (very funny)
         return true;
     }
 
+    public UpdatePack(id: number, enabled: boolean): boolean {
+        if (typeof this.WordLists[id] === 'undefined') { return false; }
+        if (!enabled) {
+            // At least one wordList needs to be enabled
+            if (this.WordLists.filter(x => x.Enabled).length == 1) { return false; }
+        }
+        this.WordLists[id].Enabled = enabled;
+
+        return true;
+    }
+
     public CreateScene = () => { // Sets a location and assigns each player their role
         const enabledWorldLists = this.WordLists.filter(x => x.Enabled === true);
         if (enabledWorldLists.length === 0) throw('No world list is enabled!'); // Server should prevent from disabling all world lists (at least one needs to be active)
-        const wordList = enabledWorldLists[Math.floor(Math.random() * enabledWorldLists.length)];
-        const infoPair = wordList.Data[Math.floor(Math.random() * wordList.Data.length)];
+        // const wordList = enabledWorldLists[Math.floor(Math.random() * enabledWorldLists.length)];
+        let allWords = new Array<InfoPair>();
+        for (const wordList of enabledWorldLists) {
+            allWords = allWords.concat(wordList.Pack.data);
+        }
+        let allExceptPrevious = allWords.filter(x => x.Location !== this.PreviousLocation);
+        if (allExceptPrevious.length == 0) { allExceptPrevious = allWords; }
+        const infoPair = allExceptPrevious[Math.floor(Math.random() * allExceptPrevious.length)];
 
-        this.Spy = this.GetRandomPlayer();
-        this.Spy.isSpy = true; // Set the spy
+        if (infoPair.Location.toLowerCase() !== SPYSCHOOL_LOCATION.toLowerCase()) {
+            this.Spy = this.GetRandomPlayer();
+            this.Spy.isSpy = true; // Set the spy
+            this.SpySchool = false;
+        } else { // SpySchool has been chosen, all players are the spy
+            this.Spy = undefined;
+            this.Players.forEach(player => player.isSpy = true);
+            this.SpySchool = true;
+        }
         this.CurrentLocation = infoPair.Location;
-        this.GuessSelection = this.GenerateWordCollection(); // Set the selection that the spy can guess from
+        this.GuessSelection = this.GenerateWordCollection(allWords); // Set the selection that the spy can guess from
 
         if (infoPair.Roles === undefined) { 
             this.Players.forEach(player => player.role = undefined); // We can include the spy here since it makes no difference (and is more performant)
@@ -157,14 +185,10 @@ export class Room { // Classroom (very funny)
         });
     }
 
-    private GenerateWordCollection = (): string[] => { // Used for determining what options will be sent to the spy to guess
+    private GenerateWordCollection = (words: InfoPair[]): string[] => { // Used for determining what options will be sent to the spy to guess
         if (!this.CurrentLocation) throw('Trying to generate a word collection without having a current location!');
-        let words = new Array<InfoPair>();
-        this.WordLists.forEach((wordList) => {
-            words = words.concat(wordList.Data);
-        });
         if (words.length <= 30) { // There are less than 30 outcomes, safe to send all of them
-            return words.map(x => x.Location); // Send all of the locations (includes the current location)
+            return this.ShuffleArray(words.map(x => x.Location)); // Send all of the locations (includes the current location)
         }
 
         // It's a little bit more involved if we have to reduce the selection to 30
@@ -176,6 +200,7 @@ export class Room { // Classroom (very funny)
         return locations;
     }
 
+    // https://stackoverflow.com/a/19270021
     private GetMultipleRandomValues<T>(array: Array<T>, count: number) {
         var result = new Array(count),
             length = array.length,
@@ -188,6 +213,21 @@ export class Room { // Classroom (very funny)
             taken[x] = --length in taken ? taken[length] : length;
         }
         return result;
+    }
+
+    // https://stackoverflow.com/a/2450976
+    private ShuffleArray<T>(array: Array<T>) {
+        var currentIndex = array.length, temporaryValue, randomIndex;
+        while (0 !== currentIndex) {
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex -= 1;
+
+          temporaryValue = array[currentIndex];
+          array[currentIndex] = array[randomIndex];
+          array[randomIndex] = temporaryValue;
+        }
+      
+        return array;
     }
 
     public CreateVote = (initiator: Player, target: Player) => {
@@ -208,22 +248,37 @@ export class Room { // Classroom (very funny)
         voter.hasVoted = true;
     }
 
-    public EndVote = () => { // TODO: So far, there is only one way for the game to end, and that is if someone is voted out
+    public EndVote = () => {
         if (this.CurrentVote?.votes.find(x => x.agreement === false) === undefined) { // Someone was voted out
-            if (!this.Spy || !this.CurrentLocation) return;
-            this.CancelGame();
-            this.EndGame = { 
-                revealedSpy: this.CreateStatePlayer(this.Spy), 
-                location: this.CurrentLocation,
-                guessedLocation: undefined,
-                newScores: new Array() 
-            };
+            if (!this.SpySchool) {
+                if (!this.Spy || !this.CurrentLocation) return;
+                this.CancelGame();
+                this.EndGame = { 
+                    revealedSpy: this.CreateStatePlayer(this.Spy),
+                    spySchool: false,
+                    location: this.CurrentLocation,
+                    guessedLocation: undefined,
+                    newScores: new Array() 
+                };
 
-            if (this.CurrentVote?.target.discriminator === this.Spy.discriminator)  // Spy was voted out
-                this.DefaultNonSpyVictory(true);
-            else // Someone other than the spy was voted out
-                this.DefaultSpyVictory(); 
-            return;
+                if (this.CurrentVote?.target.discriminator === this.Spy.discriminator)  // Spy was voted out
+                    this.DefaultNonSpyVictory(true);
+                else // Someone other than the spy was voted out
+                    this.DefaultSpyVictory(); 
+                return;
+            } else { // Different behaviour for SpySchool
+                if (!this.CurrentLocation) return;
+                this.CancelGame()
+                this.EndGame = {
+                    revealedSpy: undefined,
+                    spySchool: true,
+                    location: this.CurrentLocation,
+                    guessedLocation: undefined,
+                    newScores: new Array()
+                }
+                // Doesn't matter who was voted out, everyone is the spy
+                this.SpySchoolLoss();
+            }
         }
         this.ClearVote();
     }
@@ -252,6 +307,22 @@ export class Room { // Classroom (very funny)
         });
     }
 
+    private SpySchoolLoss () {
+        if (!this.EndGame || !this.SpySchool) return;
+        this.Players.forEach(player => {
+            const statePlayer = this.CreateStatePlayer(player)
+            // SpySchool is tough on players, only one person can win and that is the spy that first guesses the SpySchool
+            this.EndGame?.newScores.push({ player: statePlayer, addedScore: 0});
+        })
+    }
+
+    private SpySchoolCorrectGuess (guesser: Player) {
+        if (!this.EndGame || !this.SpySchool) return;
+        const statePlayer = this.CreateStatePlayer(guesser);
+        this.EndGame.newScores.push({ player: statePlayer, addedScore: 4 })
+        guesser.score += 4;
+    }
+
     public ClearVote = () => {
         this.CurrentVote = undefined;
         this.VoteParticipants = undefined;
@@ -270,14 +341,23 @@ export class Room { // Classroom (very funny)
         return true;
     }
 
-    public HandleLocationGuess = (guess: string) => {
-        if (!this.Spy || !this.CurrentLocation) return;
+    public HandleLocationGuess = (guesser: Player, guess: string) => {
+        if (!this.CurrentLocation) return;
         this.CancelGame();
         this.EndGame = {
-            revealedSpy: this.CreateStatePlayer(this.Spy),
+            revealedSpy: this.Spy ? this.CreateStatePlayer(this.Spy) : undefined,
+            spySchool: this.SpySchool != undefined ? this.SpySchool : false,
             location: this.CurrentLocation,
             guessedLocation: guess,
             newScores: new Array()
+        }
+        if (this.SpySchool) {
+            if (guess === this.CurrentLocation) { // One of the spies guessed SpySchool
+                this.SpySchoolCorrectGuess(guesser);
+            } else {
+                this.SpySchoolLoss();
+            }
+            return;
         }
         if (guess === this.CurrentLocation) { // Spy guessed correctly
             this.DefaultSpyVictory();
@@ -292,6 +372,7 @@ export class Room { // Classroom (very funny)
         this.EndGame = { 
             revealedSpy: revealedSpy,
             location: this.CurrentLocation,
+            spySchool: this.SpySchool != undefined ? this.SpySchool : false,
             guessedLocation: undefined,
             newScores: new Array() 
         };
@@ -303,7 +384,9 @@ export class Room { // Classroom (very funny)
         this.Started = false;
         this.IsStarting = false;
         this.Spy = undefined;
+        this.SpySchool = undefined;
         this.GuessSelection = undefined;
+        this.PreviousLocation = this.CurrentLocation;
         this.CurrentLocation = undefined;
         this.CurrentVote = undefined;
         this.VoteParticipants = undefined;
@@ -362,10 +445,24 @@ export class Room { // Classroom (very funny)
 function GenerateDefaultWordPack (): WordList[] {
     return [
         {
-            Name: 'Default',
+            Pack: packager.DEFAULT,
             Custom: false,
-            Data: packager.DEFAULT,
             Enabled: true
+        },
+        {
+            Pack: packager.DEFAULT_PLUS,
+            Custom: false,
+            Enabled: false
+        },
+        {
+            Pack: packager.SPYSCHOOL,
+            Custom: false,
+            Enabled: false
+        },
+        {
+            Pack: packager.CHRISTMAS,
+            Custom: false,
+            Enabled: false
         }
     ];
 }
