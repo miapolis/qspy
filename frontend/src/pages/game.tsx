@@ -5,7 +5,7 @@ import { reloadOutdatedPage, websocketUrl } from '../common';
 import { version as qspyVersion } from '../metadata.json';
 
 
-import { Sender, GameView } from './game-view';
+import { Sender, GameView } from './game-view/main';
 import { ClientPacket, ServerPacket, State } from '../protocol';
 
 const socketUrl = websocketUrl('/api/ws');
@@ -119,7 +119,7 @@ export const Game = (props: GameProps) => {
             state={state.roomState} 
             me={state.me} 
             leave={props.leave}
-            hasUserPlayed={hasPlayed}
+            hasPlayed={hasPlayed}
             />
         </UserContext.Provider>
     );

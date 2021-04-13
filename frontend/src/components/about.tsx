@@ -65,7 +65,7 @@ const useButtonStyles = makeStyles((_theme: Theme) =>
     })
 );
 
-export const HowToPlay = (props:{style?: React.CSSProperties, hasPlayed: boolean}) => {
+export const About = (props:{style?: React.CSSProperties, hasPlayed: boolean}) => {
     const headerClasses = useButtonStyles();
     const classes = useModalStyles();
     const [open, setOpen] = React.useState(!props.hasPlayed);

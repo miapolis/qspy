@@ -109,67 +109,6 @@
     margin-top: 100px;
 }
 
-.topHeader {
-    text-align: center;
-    position: relative;
-    width: 100%;
-    height: 60px;
-}
-
-.topHeader h2 {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 10px;
-    color: var(--almost-white);
-}
-
-.copyUrlButton {
-    float: left;
-    position: relative;
-    cursor: pointer;
-    border: none;
-    outline: none;
-    height: 40px;
-    width: max-content;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-radius: 5px;
-    background-color: rgb(0, 0, 0, 0);
-    transition: background-color 0.3s;
-    color: var(--almost-white);
-    top: 10px;
-    left: 10px;
-    display: table;
-    align-items: inherit;
-    justify-content: inherit;
-    font-size: 15px;
-    text-align: center;
-    overflow: hidden;
-}
-
-.copyUrlButton:hover {
-    background-color: var(--panel-color);
-}
-
-.copySvg {
-    vertical-align: middle;
-    display: table-cell;
-    float: left;
-    width: 30px;
-    height: 30px;
-    fill: var(--almost-white);
-    margin-right: 10px;
-}
-
-.copyText {
-    line-height: 1.5;
-    height: 15px;
-    display: inline-block;
-    vertical-align: middle;
-    white-space: nowrap;
-}
-
 .playerArea {
     position: relative;
     box-sizing: border-box;
@@ -228,25 +167,6 @@
     flex-flow: column;
     justify-content: center;
     align-items: center;
-}
-
-.centralArea {
-    width: 100%;
-    height: 0;
-    display: flex;
-    flex: 1 1 auto;
-    justify-content: center;
-    align-items: center;
-}
-
-.lowerSector {
-    width: 100%;
-    height: 100px;
-    bottom: 0;
-    display: flex;
-    flex: none;
-    align-items: center;
-    justify-content: center;
 }
 
 .statusHeader {

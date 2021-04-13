@@ -170,14 +170,14 @@ export class Room {
 
             this.SendToAll(); // Send to all players (including the one that just joined) that a player has joined
 
-            conn.on('message', message => {
+            conn.on('message', async message => {
                 if (!message.utf8Data) { return; }
                 let json = JSON.parse(message.utf8Data) as ClientPacket;
                 this.LastSeen = new Date();
                 this.HandlePacket(playerID, json);
             });
 
-            conn.on('close', async (data) => {
+            conn.on('close', async () => {
                 const release = await this.mutex.acquire();
                 try {
                     if (!this.Players.has(playerID)) { return; } 

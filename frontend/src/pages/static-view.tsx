@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameView, Sender } from './game-view';
+import { GameView, Sender } from './game-view/main';
 
 export const UserContext = React.createContext<Boolean>(true);
 
@@ -106,7 +106,7 @@ const props = {
 export const StaticView = () => {
     return (
         <UserContext.Provider value={true}>
-            <GameView roomID={props.roomID} send={props.send} me={props.me} state={props.state} leave={() => {}} hasUserPlayed={true}/>
+            <GameView roomID={props.roomID} send={props.send} me={props.me} state={props.state} leave={() => {}} hasPlayed={true}/>
         </UserContext.Provider>
     );
 }

@@ -143,7 +143,7 @@ export class Room { // Classroom (very funny)
     public CreateScene = () => { // Sets a location and assigns each player their role
         const enabledWorldLists = this.WordLists.filter(x => x.Enabled === true);
         if (enabledWorldLists.length === 0) throw('No world list is enabled!'); // Server should prevent from disabling all world lists (at least one needs to be active)
-        // const wordList = enabledWorldLists[Math.floor(Math.random() * enabledWorldLists.length)];
+
         let allWords = new Array<InfoPair>();
         for (const wordList of enabledWorldLists) {
             allWords = allWords.concat(wordList.Pack.data);
