@@ -3,15 +3,18 @@ import {
     createStyles,
     makeStyles,
     Theme,
-    Button
+    Button,
+    IconButton
 } from '@material-ui/core';
 
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 
 import Vote from './vote';
 import VoteDialog from './vote-dialog';
 import Location from './location';
+import QuestionSuggestion from './question-suggestion';
 import { Card } from '../../components/card';
 
 import { RoomState, LocalPlayer } from '../../protocol';
@@ -65,6 +68,7 @@ export default function CentralArea ({ state, me, send }: CentralAreaProps) {
     const [cardFlipped, setCardFlipped] = React.useState(false);
     const [voteValue, setVoteValue] = React.useState<string>('');
     const [voteDialogOpen, setVoteDialogOpen] = React.useState(false);
+    const [questionSuggestionDialogOpen, setQuestionSuggestionDialogOpen] = React.useState(false);
     const [guessLocationDialogOpen, setGuessLocationDialogOpen] = React.useState(false);
 
     React.useEffect(() => {
@@ -114,6 +118,14 @@ export default function CentralArea ({ state, me, send }: CentralAreaProps) {
                         startIcon={<AccountCircle />}>
                             CREATE VOTE
                         </Button>
+                        <div style={{display: 'flex', alignItems: 'center'}}>
+                            <IconButton
+                            size='small'
+                            onClick={() => setQuestionSuggestionDialogOpen(!questionSuggestionDialogOpen)}
+                            >
+                                <QuestionAnswerIcon />
+                            </IconButton>
+                        </div>
                     </div> 
                 : null
             }
@@ -132,6 +144,11 @@ export default function CentralArea ({ state, me, send }: CentralAreaProps) {
             isOpen={state.currentVote ? false : voteDialogOpen} 
             onClose={handleVoteDialogClose}/>
             </div>
+            <QuestionSuggestion
+            suggestion={state.currentSuggestion}
+            open={questionSuggestionDialogOpen} 
+            onClose={() => setQuestionSuggestionDialogOpen(false)}
+            />
         </div>
     )
 }

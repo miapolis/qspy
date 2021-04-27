@@ -246,7 +246,7 @@ export class Room {
                     this.SendToAll();
                     break;
                 }
-                case protocol.Method_StartGame: 
+                case protocol.Method_StartGame:
                 { // START GAME
                     if (!sender.isHost) return;
                     if (this.GameRoom.Players.size < 3) return; // At least three players are required to start a game
@@ -255,12 +255,18 @@ export class Room {
                     this.GameRoom.IsStarting = true; // Let the other players have a heads up
                     this.SendToAll();
                     this.GameRoom.CreateScene(); // Allow preparation for starting game
+                    this.GameRoom.InitSuggestions(); // InitSuggestions also creates a new cycle, so players will have a suggestion at the start
+                    
                     this.GameRoom.StoreStartID(setTimeout(() => {
                         this.GameRoom.StartGame(setTimeout(() => {
                             this.GameRoom.EndGameViaTimer(); // Callback to end the game after the timer runs out
                             this.SendToAll();
                         }, this.GameRoom.TimerLength * 1000));
                         this.SendToAll();
+                        this.GameRoom.StartSuggestionCycle(setInterval(() => {
+                            this.GameRoom.NewSuggestionCycle();
+                            this.SendToAll();
+                        }, 60000))
                     }, 5000));
                     break;
                 }   
@@ -365,6 +371,7 @@ export class Room {
             packs: createdPacks,
             guessSelection: player?.isSpy ? room.GuessSelection : undefined,
             currentLocation: player?.isSpy ? undefined : room.CurrentLocation,
+            currentSuggestion: player ? room.CurrentSuggestions?.get(player.discriminator) || "" : "",
             currentVote: room.CurrentVote,
             endGame: room.EndGame
         };

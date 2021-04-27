@@ -172,6 +172,7 @@ export interface RoomState {
     packs: NoDataPack[];
     guessSelection: string[] | undefined;
     currentLocation: string | undefined;
+    currentSuggestion: string | undefined;
     currentVote: VoteState | undefined;
     endGame: EndGameState | undefined;
 }

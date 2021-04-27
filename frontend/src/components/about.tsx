@@ -84,13 +84,13 @@ export const About = (props:{style?: React.CSSProperties, hasPlayed: boolean}) =
                         <h2 className={classes.h2} id='modal-title'>How to play</h2>
                         <p className={classes.p} id="modal-description">
                             <b>QSpy</b> is a social deduction game in which players work together to determine
-                            who the spy is between them.  
+                            who the spy is between them.
                         </p>
                         <br />
                         <p className={classes.p} id="modal-description">
                             <b>Gameplay:</b> When the game starts, everyone receives the same location and a unique role,
-                            except for one person who is the spy. All regular players want to find out who the spy
-                            is and vote them out before the spy guesses the location correctly and wins.
+                            except for one person who is the spy. For example, players could receive "Beach" or "Restaurant" as their location.
+                            All regular players want to find out who the spy is and vote them out before the spy guesses the location correctly and wins.
                         </p>
                         <br />
                         <p className={classes.p} id="modal-description">

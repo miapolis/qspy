@@ -57,7 +57,7 @@ const props = {
                 isHost: false
             }
         ],
-        started: false,
+        started: true,
         isStarting: false,
         timerLength: 300,
         packs: [
@@ -78,28 +78,29 @@ const props = {
             'Ocean Liner',
             'Police Station'
         ],
-        endGame: {
-            revealedSpy: {
-                nickname: 'Username',
-                discriminator: 1,
-                score: 0,
-                isHost: true
-            },
-            location: 'Beach',
-            spySchool: false,
-            guessedLocation: 'Beach',
-            newScores: [
-                {
-                    player: {
-                        nickname: 'Username',
-                        discriminator: 1,
-                        score: 0,
-                        isHost: true
-                    },
-                    addedScore: 4
-                } 
-            ]
-        }
+        currentSuggestion: 'What kind of colors do you see?',
+        // endGame: {
+        //     revealedSpy: {
+        //         nickname: 'Username',
+        //         discriminator: 1,
+        //         score: 0,
+        //         isHost: true
+        //     },
+        //     location: 'Beach',
+        //     spySchool: false,
+        //     guessedLocation: 'Beach',
+        //     newScores: [
+        //         {
+        //             player: {
+        //                 nickname: 'Username',
+        //                 discriminator: 1,
+        //                 score: 0,
+        //                 isHost: true
+        //             },
+        //             addedScore: 4
+        //         } 
+        //     ]
+        // }
     }
 }
 

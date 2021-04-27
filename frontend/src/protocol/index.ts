@@ -120,6 +120,7 @@ export const RoomState = myzod.object({
     packs: myzod.array(Pack),
     guessSelection: myzod.array(myzod.string()).optional(),
     currentLocation: myzod.string().optional(),
+    currentSuggestion: myzod.string().optional(),
     currentVote: VoteState.optional(),
     endGame: EndGameState.optional()
 });

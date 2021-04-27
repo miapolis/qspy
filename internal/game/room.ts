@@ -1,4 +1,5 @@
 import { InfoPair, Pack, SPYSCHOOL_LOCATION } from '../words/words';
+import * as util from './util';
 import * as packager from '../words/packager';
 import { MAX_ROOM_MEMBER_COUNT } from '../server/server';
 import { EndGameState, StatePlayer } from '../protocol';
@@ -26,6 +27,7 @@ export class Room { // Classroom (very funny)
     public GuessSelection: string[] | undefined;
     public TimerLength: number;
     public CurrentLocation: string | undefined;
+    public CurrentSuggestions: Map<number, string> | undefined;
     public PreviousLocation: string | undefined;
     public CurrentVote: Vote | undefined;
     public VoteParticipants: Player[] | undefined; // Better for lookups
@@ -34,6 +36,10 @@ export class Room { // Classroom (very funny)
     private Discriminators: Map<number, Player>;
     private StartTimerID: NodeJS.Timeout | undefined; // Used for when the game is about to start
     private GameTimerID: NodeJS.Timeout | undefined;
+
+    private SuggestionsSet: string[] | undefined;
+    private CurrentSuggestionIndex: number | undefined;
+    private SuggestionTimerID: NodeJS.Timeout | undefined;
 
     constructor() {
         this.Players = new Map<string, Player>();
@@ -91,6 +97,7 @@ export class Room { // Classroom (very funny)
                 };
             } 
             else if (this.Players.size < 3) {
+                this.CancelGame(); // Reset all timers and intervals associated with the game
                 this.Reset(); // Not enough players to continue the game 
             }
         }
@@ -188,46 +195,16 @@ export class Room { // Classroom (very funny)
     private GenerateWordCollection = (words: InfoPair[]): string[] => { // Used for determining what options will be sent to the spy to guess
         if (!this.CurrentLocation) throw('Trying to generate a word collection without having a current location!');
         if (words.length <= 30) { // There are less than 30 outcomes, safe to send all of them
-            return this.ShuffleArray(words.map(x => x.Location)); // Send all of the locations (includes the current location)
+            return util.ShuffleArray(words.map(x => x.Location)); // Send all of the locations (includes the current location)
         }
 
         // It's a little bit more involved if we have to reduce the selection to 30
         // We need to get 30 random dummy locations and then replace one with the actual location
-        const slice = this.GetMultipleRandomValues(words.filter(x => x.Location !== this.CurrentLocation), 30);
+        const slice = util.GetMultipleRandomValues(words.filter(x => x.Location !== this.CurrentLocation), 30);
         const locations = slice.map(x => x.Location);
         locations[Math.floor(Math.random() * locations.length)] = this.CurrentLocation;
 
         return locations;
-    }
-
-    // https://stackoverflow.com/a/19270021
-    private GetMultipleRandomValues<T>(array: Array<T>, count: number) {
-        var result = new Array(count),
-            length = array.length,
-            taken = new Array(length);
-        if (count > length)
-            throw new RangeError("GetMultipleRandomValues: attempting to take more elements than size!");
-        while (count--) {
-            var x = Math.floor(Math.random() * length);
-            result[count] = array[x in taken ? taken[x] : x];
-            taken[x] = --length in taken ? taken[length] : length;
-        }
-        return result;
-    }
-
-    // https://stackoverflow.com/a/2450976
-    private ShuffleArray<T>(array: Array<T>) {
-        var currentIndex = array.length, temporaryValue, randomIndex;
-        while (0 !== currentIndex) {
-          randomIndex = Math.floor(Math.random() * currentIndex);
-          currentIndex -= 1;
-
-          temporaryValue = array[currentIndex];
-          array[currentIndex] = array[randomIndex];
-          array[randomIndex] = temporaryValue;
-        }
-      
-        return array;
     }
 
     public CreateVote = (initiator: Player, target: Player) => {
@@ -388,11 +365,14 @@ export class Room { // Classroom (very funny)
         this.GuessSelection = undefined;
         this.PreviousLocation = this.CurrentLocation;
         this.CurrentLocation = undefined;
+        this.CurrentSuggestions = undefined;
         this.CurrentVote = undefined;
         this.VoteParticipants = undefined;
         this.EndGame = undefined;
         this.StartTimerID = undefined;
         this.GameTimerID = undefined;
+        this.SuggestionsSet = undefined;
+        this.CurrentSuggestionIndex = undefined;
         this.Players.forEach((player) => { // Reset everything except their score
             player.isSpy = false;
             player.role = undefined;
@@ -402,13 +382,50 @@ export class Room { // Classroom (very funny)
     }
 
     public StoreStartID = (timeout: NodeJS.Timeout) => this.StartTimerID = timeout; 
-    public CancelStart = () => { if(this.StartTimerID !== undefined) clearTimeout(this.StartTimerID); this.IsStarting = false; }
-    public CancelGame = () => { if(this.GameTimerID !== undefined) clearTimeout(this.GameTimerID); }
+    public CancelStart = () => { if (this.StartTimerID !== undefined) clearTimeout(this.StartTimerID); this.IsStarting = false; }
+    public CancelGame = () => { if (this.GameTimerID !== undefined) clearTimeout(this.GameTimerID); this.CancelSuggestions(); }
+    public CancelSuggestions = () => { if (this.SuggestionTimerID !== undefined) clearTimeout(this.SuggestionTimerID); }
     public StartGame = (timeout: NodeJS.Timeout) => { 
         this.IsStarting = false; 
         this.StartTimerID = undefined; 
         this.Started = true; 
         this.GameTimerID = timeout;
+    }
+
+    public StartSuggestionCycle(timeout: NodeJS.Timeout) {
+        this.SuggestionTimerID = timeout;
+    }
+
+    // Creates a new question suggestion chunk for the room to be mapped to each player
+    // Each sent suggestion is mapped to a specific player to remove duplicates
+    public NewSuggestionCycle () { 
+        if (this.CurrentSuggestionIndex === undefined ||
+            this.SuggestionsSet === undefined) {
+            this.CancelSuggestions();
+            return;
+        } // Ensure that no further actions are being done
+
+        // Will return a unique chunk of suggestions so that each player always receives a unique suggestion that they can use themselves
+        const slice = this.SuggestionsSet.slice(this.CurrentSuggestionIndex);
+        let suggestions: string[] = slice.filter(x => slice.indexOf(x) < this.Players.size);
+        suggestions = util.ShuffleArray(suggestions);
+        suggestions.forEach((suggestion, i) => {
+            i++;
+            const player = this.GetPlayerByDiscriminator(i);
+            if (player === undefined) return;
+
+            this.CurrentSuggestions?.set(i, suggestion);
+        })
+
+        this.CurrentSuggestionIndex += this.Players.size; // Which chunk of suggestions to serve to everyone
+        if (this.CurrentSuggestionIndex >= this.SuggestionsSet.length - 3) this.CurrentSuggestionIndex = 0;
+    }
+
+    public InitSuggestions () {
+        this.CurrentSuggestions = new Map<number, string>();
+        this.SuggestionsSet = util.ShuffleArray(packager.SUGGESTIONS.data);
+        this.CurrentSuggestionIndex = 0;
+        this.NewSuggestionCycle();
     }
 
     private CreateSafeNickname (nickname: string): string { // Creates a nickname that is unique for the room

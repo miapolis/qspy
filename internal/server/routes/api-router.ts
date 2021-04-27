@@ -9,7 +9,7 @@ import * as metrics from '../metrics';
 
 export const checkVersion = (req:any, res:any, next: NextFunction) => {
     const clientVersion = req.header('X-QSPY-VERSION');
-    if (clientVersion == undefined || clientVersion != Version()) { 
+    if (clientVersion == undefined || clientVersion != Version()) {
         res.status(418).send('Version does not match API version.');
         return;
     }
