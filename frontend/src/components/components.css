@@ -1,260 +1,284 @@
-@import url('../App.css');
+@import url("../App.css");
 
 :root {
-    --background-color: #222222;
-    --dark-background: #1d1d1d;
-    --dark-highlight: #363636;
-    --dark-highlight-bright: #3b3b3b;
-    --dim-white: #e4e4e4;
-    --dimmer-white: #cecece;
-    --text-muted: #707070;
-    --highlight: #ffa726;
-    --error-red: #e62f22;
-    --error-light: #e94d42;
-    --near-black: #181818;
-    --dot-color: #5f5f5f;
-    --panel-color:#2e2e2e;
-    --feature-main: #afafaf;
+  --background-color: #222222;
+  --dark-background: #1d1d1d;
+  --dark-highlight: #363636;
+  --dark-highlight-bright: #3b3b3b;
+  --dim-white: #e4e4e4;
+  --dimmer-white: #cecece;
+  --text-muted: #707070;
+  --highlight: #ffa726;
+  --error-red: #e62f22;
+  --error-light: #e94d42;
+  --near-black: #181818;
+  --dot-color: #5f5f5f;
+  --panel-color: #2e2e2e;
+  --feature-main: #afafaf;
 }
 
 .unselectable {
-    user-select: none;
-    -webkit-user-drag: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
 }
 
 .entryForm {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
 }
 
 .directForm {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
 }
 
 .entryForm label {
-    width: 100%;
-    font-size: 13px;
-    color: var(--text-muted);
-    font-weight: bolder;
+  width: 100%;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: bolder;
 }
 
 input {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    width: 100%;
-    height: 35px;
-    background-color: var(--panel-color);
-    outline-style: solid;
-    outline-color: var(--highlight);
-    outline-width: 0;
-    border: 1.5px solid;
-    border-color: var(--near-black);
-    color: white;
-    font-size: 15px;
-    padding-left: 7px;
-    box-sizing: border-box;
-    outline-width: 0;
-    border-radius: 3px;
-    transition: border-color .2s ease-in-out;
-    	transition-property: border-color;
-    	transition-duration: 0.2s;
-    	transition-timing-function: ease-in-out;
-    	transition-delay: 0s;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  height: 35px;
+  background-color: var(--panel-color);
+  outline-style: solid;
+  outline-color: var(--highlight);
+  outline-width: 0;
+  border: 1.5px solid;
+  border-color: var(--near-black);
+  color: white;
+  font-size: 15px;
+  padding-left: 7px;
+  box-sizing: border-box;
+  outline-width: 0;
+  border-radius: 3px;
+  transition: border-color 0.2s ease-in-out;
+  transition-property: border-color;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-in-out;
+  transition-delay: 0s;
 }
 
 input:focus {
-    border-color: var(--highlight);
+  border-color: var(--highlight);
 }
 
 .entryForm .buttonContainer {
-    width: 100%;
-    display: flex;
+  width: 100%;
+  display: flex;
 }
 
-.entryForm .buttonHalf { position: relative; margin-top: 20px; width: 50%; height: 50px; z-index: 0;}
-.entryForm .buttonHalf:hover  { z-index: 1; }
+.entryForm .buttonHalf {
+  position: relative;
+  margin-top: 20px;
+  width: 50%;
+  height: 50px;
+  z-index: 0;
+}
+.entryForm .buttonHalf:hover {
+  z-index: 1;
+}
 
 .entryForm .submitButton {
-    color: var(--near-black);
-    display: inline-block;
-    width: 100%;
-    border: none;
-    outline: 0;  
-    height: 50px;
-    background-color: var(--feature-main);
-    box-shadow: 0px 0px 10px 5px rgb(0, 0, 0, 0);
-    transition: background-color 0.3s, box-shadow 0.3s;
-    font-weight: 600;
-    border-radius: 5px;
+  color: var(--near-black);
+  display: inline-block;
+  width: 100%;
+  border: none;
+  outline: 0;
+  height: 50px;
+  background-color: var(--feature-main);
+  box-shadow: 0px 0px 10px 5px rgb(0, 0, 0, 0);
+  transition: background-color 0.3s, box-shadow 0.3s;
+  font-weight: 600;
+  border-radius: 5px;
 }
 
 .formButton {
-    color: var(--near-black);
-    margin-top: 10px;
-    width: 100%;
-    border: none;
-    outline: 0;  
-    height: 50px;
-    background-color: var(--feature-main);
-    box-shadow: 0px 0px 10px 5px rgb(0, 0, 0, 0);
-    transition: background-color 0.3s, box-shadow 0.3s;
-    font-weight: 600;
-    border-radius: 5px;
+  color: var(--near-black);
+  margin-top: 10px;
+  width: 100%;
+  border: none;
+  outline: 0;
+  height: 50px;
+  background-color: var(--feature-main);
+  box-shadow: 0px 0px 10px 5px rgb(0, 0, 0, 0);
+  transition: background-color 0.3s, box-shadow 0.3s;
+  font-weight: 600;
+  border-radius: 5px;
 }
 
 .formButton:hover:hover {
-    box-shadow: 0px 0px 10px 5px rgb(0, 0, 0, 10%);
-    background-color: var(--dimmer-white);
+  box-shadow: 0px 0px 10px 5px rgb(0, 0, 0, 10%);
+  background-color: var(--dimmer-white);
 }
 
-.entryForm .submitButton:hover{
-    box-shadow: 0px 0px 10px 5px rgb(0, 0, 0, 30%);
-    background-color: var(--dimmer-white);
+.entryForm .submitButton:hover {
+  box-shadow: 0px 0px 10px 5px rgb(0, 0, 0, 30%);
+  background-color: var(--dimmer-white);
 }
 
 .entryForm .submitButton:disabled {
-    box-shadow: 0px 0px 10px 5px rgb(0, 0, 0, 0);
-    background-color: var(--dimmer-white);
+  box-shadow: 0px 0px 10px 5px rgb(0, 0, 0, 0);
+  background-color: var(--dimmer-white);
 }
 
 .entryForm .left {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
 }
 
 .entryForm .right {
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 .dotArea {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    justify-items: center;
-    
-    pointer-events: none;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+
+  pointer-events: none;
 }
 
 .dotAreaDirect {
-    position: absolute;
-    bottom: 0;
-    margin-bottom: 30px;
-    width: 400px; 
-    height: 50px;
-    z-index: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    justify-items: center;
-    pointer-events: none;
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 30px;
+  width: 400px;
+  height: 50px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+  pointer-events: none;
 }
 
 .dotAreaCenter {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 100; 
-    height: 100;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    justify-items: center;
-    pointer-events: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100;
+  height: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+  pointer-events: none;
 }
 
 .dotsCenter {
-    position: relative;
-    left: -9999px;
-    width: 10px;
-    height: 10px;
-    border-radius: 5px;
-    background-color: var(--dot-color);
-    color: var(--dot-color);
-    box-shadow: 9991px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color), 10007px 0 0 0 var(--dot-color);
-    animation: dotAnim 2s infinite ease;
+  position: relative;
+  left: -9999px;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: var(--dot-color);
+  color: var(--dot-color);
+  box-shadow: 9991px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color),
+    10007px 0 0 0 var(--dot-color);
+  animation: dotAnim 2s infinite ease;
 }
 
 .dots {
-    position: relative;
-    margin-top: 15px; /* Surely this shouldn't be hard-coded... right? */
-    left: -9999px;
-    width: 10px;
-    height: 10px;
-    border-radius: 5px;
-    background-color: var(--dot-color);
-    color: var(--dot-color);
-    box-shadow: 9991px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color), 10007px 0 0 0 var(--dot-color);
-    animation: dotAnim 2s infinite ease;
+  position: relative;
+  margin-top: 15px; /* Surely this shouldn't be hard-coded... right? */
+  left: -9999px;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: var(--dot-color);
+  color: var(--dot-color);
+  box-shadow: 9991px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color),
+    10007px 0 0 0 var(--dot-color);
+  animation: dotAnim 2s infinite ease;
 }
 
 .dotsDirect {
-    position: relative;
-    margin-top: 18px; /* Surely this shouldn't be hard-coded... right? */
-    left: -9999px;
-    width: 10px;
-    height: 10px;
-    border-radius: 5px;
-    background-color: var(--dot-color);
-    color: var(--dot-color);
-    box-shadow: 9991px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color), 10007px 0 0 0 var(--dot-color);
-    animation: dotAnim 2s infinite ease;
+  position: relative;
+  margin-top: 18px; /* Surely this shouldn't be hard-coded... right? */
+  left: -9999px;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: var(--dot-color);
+  color: var(--dot-color);
+  box-shadow: 9991px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color),
+    10007px 0 0 0 var(--dot-color);
+  animation: dotAnim 2s infinite ease;
 }
-  
+
 @keyframes dotAnim {
-    0% {
-        box-shadow: 9991px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color), 10007px 0 0 0 var(--dot-color);
-    }
-    8.333% {
-        box-shadow: 10007px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color), 10007px 0 0 0 var(--dot-color);
-    }
-    16.667% {
-        box-shadow: 10007px -16px 0 0 var(--dot-color), 9991px -16px 0 0 var(--dot-color), 10007px 0 0 0 var(--dot-color);
-    }
-    25% {
-        box-shadow: 10007px -16px 0 0 var(--dot-color), 9991px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color);
-    }
-    33.333% {
-        box-shadow: 10007px 0 0 0 var(--dot-color), 9991px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color);
-    }
-    41.667% {
-        box-shadow: 10007px 0 0 0 var(--dot-color), 10007px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color);
-    }
-    50% {
-        box-shadow: 10007px 0 0 0 var(--dot-color), 10007px -16px 0 0 var(--dot-color), 9991px -16px 0 0 var(--dot-color);
-    }
-    58.333% {
-        box-shadow: 9991px 0 0 0 var(--dot-color), 10007px -16px 0 0 var(--dot-color), 9991px -16px 0 0 var(--dot-color);
-    }
-    66.666% {
-        box-shadow: 9991px 0 0 0 var(--dot-color), 10007px 0 0 0 var(--dot-color), 9991px -16px 0 0 var(--dot-color);
-    }
-    75% {
-        box-shadow: 9991px 0 0 0 var(--dot-color), 10007px 0 0 0 var(--dot-color), 10007px -16px 0 0 var(--dot-color);
-    }
-    83.333% {
-        box-shadow: 9991px -16px 0 0 var(--dot-color), 10007px 0 0 0 var(--dot-color), 10007px -16px 0 0 var(--dot-color);
-    }
-    91.667% {
-        box-shadow: 9991px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color), 10007px -16px 0 0 var(--dot-color);
-    }
-    100% {
-        box-shadow: 9991px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color), 10007px 0 0 0 var(--dot-color);
-    }
+  0% {
+    box-shadow: 9991px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color),
+      10007px 0 0 0 var(--dot-color);
+  }
+  8.333% {
+    box-shadow: 10007px -16px 0 0 var(--dot-color),
+      9991px 0 0 0 var(--dot-color), 10007px 0 0 0 var(--dot-color);
+  }
+  16.667% {
+    box-shadow: 10007px -16px 0 0 var(--dot-color),
+      9991px -16px 0 0 var(--dot-color), 10007px 0 0 0 var(--dot-color);
+  }
+  25% {
+    box-shadow: 10007px -16px 0 0 var(--dot-color),
+      9991px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color);
+  }
+  33.333% {
+    box-shadow: 10007px 0 0 0 var(--dot-color),
+      9991px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color);
+  }
+  41.667% {
+    box-shadow: 10007px 0 0 0 var(--dot-color),
+      10007px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color);
+  }
+  50% {
+    box-shadow: 10007px 0 0 0 var(--dot-color),
+      10007px -16px 0 0 var(--dot-color), 9991px -16px 0 0 var(--dot-color);
+  }
+  58.333% {
+    box-shadow: 9991px 0 0 0 var(--dot-color),
+      10007px -16px 0 0 var(--dot-color), 9991px -16px 0 0 var(--dot-color);
+  }
+  66.666% {
+    box-shadow: 9991px 0 0 0 var(--dot-color), 10007px 0 0 0 var(--dot-color),
+      9991px -16px 0 0 var(--dot-color);
+  }
+  75% {
+    box-shadow: 9991px 0 0 0 var(--dot-color), 10007px 0 0 0 var(--dot-color),
+      10007px -16px 0 0 var(--dot-color);
+  }
+  83.333% {
+    box-shadow: 9991px -16px 0 0 var(--dot-color),
+      10007px 0 0 0 var(--dot-color), 10007px -16px 0 0 var(--dot-color);
+  }
+  91.667% {
+    box-shadow: 9991px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color),
+      10007px -16px 0 0 var(--dot-color);
+  }
+  100% {
+    box-shadow: 9991px -16px 0 0 var(--dot-color), 9991px 0 0 0 var(--dot-color),
+      10007px 0 0 0 var(--dot-color);
+  }
 }
 
 /* ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -262,114 +286,114 @@ input:focus {
    //////////////////////////////////////////////////////////////////////////////////////////////// */
 
 .playerElement {
-    position: relative;
-    width: 100%;
-    height: fit-content;
-    border-radius: 5px;
-    background-color: var(--dark-highlight);
-    padding: 10px;
-    margin-top: 10px;
-    box-sizing: border-box;
-    transition: background-color 0.3s, box-shadow 0.3s;
+  position: relative;
+  width: 100%;
+  height: fit-content;
+  border-radius: 5px;
+  background-color: var(--dark-highlight);
+  padding: 10px;
+  margin-top: 10px;
+  box-sizing: border-box;
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .playerElement:hover {
-    background-color: var(--dark-highlight-bright);
-    box-shadow: 0px 4px 4px 0px rgb(0, 0, 0, 20%);
+  background-color: var(--dark-highlight-bright);
+  box-shadow: 0px 4px 4px 0px rgb(0, 0, 0, 20%);
 }
 
 .playerElement .nameText {
-    height: 24px;
-    width: auto;
-    max-width: calc(100% - 30px);
-    font-size: 20px;
-    color: var(--dim-white);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  height: 24px;
+  width: auto;
+  max-width: calc(100% - 30px);
+  font-size: 20px;
+  color: var(--dim-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .playerElement .host {
-    float: left;
-    width: auto;
-    margin-right: 5px;
+  float: left;
+  width: auto;
+  margin-right: 5px;
 }
 
 .playerElement img {
-    display: inline-block;
-    margin-top: 0;
-    width: 22px;
-    height: 22px;
+  display: inline-block;
+  margin-top: 0;
+  width: 22px;
+  height: 22px;
 }
 
 .playerElement .scoreText {
-    font-size: 15px;
-    text-indent: 15px;
-    width: 100px;
-    color: var(--dimmer-white);
+  font-size: 15px;
+  text-indent: 15px;
+  width: 100px;
+  color: var(--dimmer-white);
 }
 
 .playerElement .kick {
-    width: 25px;
-    height: 25px;
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    margin-right: 10px;
+  width: 25px;
+  height: 25px;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  margin-right: 10px;
 }
 
 .card-container {
-    perspective: 1000px;
-    position: relative;
-    width: 20rem;
-    height: 28rem;
-    box-sizing: border-box;
+  perspective: 1000px;
+  position: relative;
+  width: 20rem;
+  height: 28rem;
+  box-sizing: border-box;
 }
 
 .innerCard {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transform-style: preserve-3d;
-    transition: -webkit-transform ease 500ms;
-    transition: transform ease 500ms;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: -webkit-transform ease 500ms;
+  transition: transform ease 500ms;
 }
 
 .flipped .innerCard {
-    transform: rotateY(180deg);
+  transform: rotateY(180deg);
 }
 
 .card-front {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-    justify-content: center;
-    background: var(--panel-color);
-    transform: rotateY(0deg) translateZ(1px);
-    border-radius: 0.5rem;
-    backface-visibility: hidden;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--panel-color);
+  transform: rotateY(0deg) translateZ(1px);
+  border-radius: 0.5rem;
+  backface-visibility: hidden;
 }
 
 .card-front p {
-    margin-top: 1rem;
-    font-size: 1.33rem;
-    font-weight: normal;
-    color: #dddddd;
+  margin-top: 1rem;
+  font-size: 1.33rem;
+  font-weight: normal;
+  color: #dddddd;
 }
 
 .card-back {
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    transform: rotateY(180deg) translateZ(1px);
-    box-sizing: border-box;
-    display: block;
-    position: absolute;
-    top: 0;
-    background: var(--panel-color);
-    border-radius: 0.5rem;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  transform: rotateY(180deg) translateZ(1px);
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  top: 0;
+  background: var(--panel-color);
+  border-radius: 0.5rem;
 }
