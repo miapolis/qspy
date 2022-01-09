@@ -463,22 +463,7 @@ export class Room {
   };
 }
 
-const originIsAllowed = (origin: any): boolean => {
-  if (
-    origin === "http://localhost:5000" ||
-    origin === "http://localhost:3000" ||
-    origin === "https://qspy.xyz"
-  )
-    return true;
-  return false;
-};
-
 wss.on("request", async (request: websocket.request) => {
-  if (!originIsAllowed(request.origin)) {
-    request.reject();
-    return;
-  }
-
   const httpReq = request.httpRequest;
   const search = httpReq.url?.substring(httpReq.url.indexOf("?"));
   let roomID, nickname;
